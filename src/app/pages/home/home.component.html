@@ -1,0 +1,254 @@
+<header class="sec-1 d-flex align-items-center">
+    <div class="container">
+        <div class="row align-items-center text-center text-md-start">
+
+            <div class="col-md-6">
+                <h1 class="title">Taste The Goodness</h1>
+                <p class="subtitle">
+                    Fresh, healthy and delicious meals for your daily lifestyle.
+                </p>
+            </div>
+
+            <div class="col-md-6 mt-4 mt-md-0">
+                <img src="assets/images/fbc934bd-96de-4a53-b2dc-cf5f09f58b98.png" alt="" class="img-fluid hero-img" />
+            </div>
+
+        </div>
+    </div>
+</header>
+
+
+
+<div class="container card-1 py-5">
+
+    <div class="header d-flex justify-content-between align-items-center flex-wrap">
+        <div class="profile d-flex align-items-center gap-2">
+            <div class="avatar"></div>
+            <h2 class="mb-0">Today</h2>
+        </div>
+
+        <div class="streak text-end">
+            1 DAY <br>
+            <span>STREAK</span>
+        </div>
+    </div>
+
+    <div class="row mt-3 justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card calories">
+                <h3>Calories</h3>
+                <p class="sub">Remaining = Goal - Food + Exercise</p>
+
+                <div class="row align-items-center gy-3">
+                    <div class="col-12 col-md-5 text-center">
+                        <div class="circle mx-auto">
+                            <span>2480</span>
+                            <small>Remaining</small>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-7">
+                        <div class="details">
+                            <p>🏁 Base Goal <b>2480</b></p>
+                            <p>🍽️ Food <b>0</b></p>
+                            <p>🔥 Exercise <b>0</b></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="text-center mt-5">
+        <p class="desc">
+            Enter your health data to generate a personalized report
+        </p>
+
+        <button class="btn main-btn" (click)="toggleForm()">
+            Start Now
+        </button>
+    </div>
+
+    <div *ngIf="showForm" class="form-box mt-4">
+
+        <form (ngSubmit)="submitForm()" #form="ngForm">
+
+            <div class="form-grid">
+
+                <input type="number" placeholder="Height (cm)" name="height" ngModel>
+
+                <input type="number" placeholder="Weight (kg)" name="weight" ngModel>
+
+                <input type="number" placeholder="Age" name="age" ngModel>
+
+                <div class="gender-box d-flex">
+                    <label>Gender:</label>
+                    <div class="d-flex gap-3">
+                        <label><input type="radio" name="gender" value="male" ngModel> Male</label>
+                        <label><input type="radio" name="gender" value="female" ngModel> Female</label>
+                    </div>
+                </div>
+
+                <select name="activity" ngModel>
+                    <option value="">Activity Level</option>
+                    <option>Sedentary</option>
+                    <option>Moderate</option>
+                    <option>Active</option>
+                </select>
+
+                <input type="number" placeholder="Last Glucose Reading (mmol/L)" name="glucose" ngModel>
+
+                <input type="time" placeholder="Glucose Time" name="glucoseTime" ngModel>
+
+                <input type="number" placeholder="Meal Calories (kcal)" name="mealCalories" ngModel>
+
+                <input type="number" placeholder="Carbohydrates (g)" name="carbs" ngModel>
+
+                <input type="time" placeholder="Meal Time" name="mealTime" ngModel>
+
+                <input type="number" placeholder="Heart Rate (bpm)" name="heartRate" ngModel>
+
+                <input type="number" placeholder="Last Insulin Dose" name="insulinDose" ngModel>
+
+                <input type="time" placeholder="Last Insulin Time" name="insulinTime" ngModel>
+
+            </div>
+
+            <button class="btn submit-btn mt-3">
+                Generate Report
+            </button>
+
+        </form>
+    </div>
+</div>
+
+
+
+<section class="values-section" id="values">
+    <div class="text-content">
+        <div class="About-content text-center">
+            <h2 class="Aboutus fs-1 fw-bolder mb-5" data-bigletter="Our Values">
+                Your Better Life
+            </h2>
+            <hr>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center values-grid">
+
+            <div class="col-md-5 value-card">
+                <div class="img-wrapper">
+                    <img src="assets/images/moza-removebg-preview.png" class="w-100" alt="Value 1" />
+                </div>
+
+                <h5>Simplicity as<br> a response to reality</h5>
+
+            </div>
+
+            <div class="col-md-5 value-card">
+                <div class="img-wrapper">
+                    <img src="assets/images/girl.png" class="w-100" alt="Value 2" />
+                </div>
+
+                <h5>Eating well<br> without feeling bad</h5>
+
+            </div>
+
+            <div class="col-md-5 value-card">
+                <div class="img-wrapper">
+                    <img src="assets/images/beliefs_3_orange.png" class="w-100" alt="Value 3" />
+
+                </div>
+                <h5>Sustainability as a result of<br> small actions</h5>
+
+            </div>
+
+            <div class="col-md-5 value-card">
+                <div class="img-wrapper">
+                    <img src="assets/images/beliefs_4_orange.png" class="w-100" alt="Value 4" />
+
+                </div>
+                <h5>Making your<br> life tasty</h5>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
+
+<section class="ingredients-section">
+    <div class="text-content">
+        <div class="About-content text-center">
+            <h2 class="Aboutus fs-1 fw-bolder mb-5" data-bigletter="Our Ingredients">
+                Naturally Selected
+            </h2>
+            <hr>
+        </div>
+    </div>
+
+    <div class="container ingredients-wrapper pt-4">
+
+        <!-- Eat well -->
+        <div class="ingredient-row left-text">
+            <div class="text-box text-center">
+                <h4>Eat well</h4>
+                <p>
+                    There’s only one “right” way to eat healthy and be well: yours!
+                    We encourage you to forge your own path to being well with the food
+                    you prepare — embracing simple cooking and balanced eating along the
+                    way. Experience the freedom of tasty, good-for-you food that doesn’t
+                    come with stipulations or limits.
+                </p>
+            </div>
+
+            <div class="image-box">
+                <img src="../../../assets/images/come.webp" class="w-75" alt="Eat well">
+            </div>
+        </div>
+
+        <!-- Move often -->
+        <div class="ingredient-row right-text">
+            <div class="image-box">
+                <img src="../../../assets/images/muevete.webp" class="w-75" alt="Move often">
+            </div>
+
+            <div class="text-box text-center">
+                <h4>Move often</h4>
+                <p>
+                    Do you find it hard to make the time to exercise regularly, or even
+                    move throughout your day? We’ve got some great news: you don’t need
+                    to train for a marathon to improve your physical or emotional health.
+                    You just need to walk a bit each day. By walking frequently, even just
+                    a short distance, you can drastically improve your well-being!
+                </p>
+            </div>
+        </div>
+
+        <!-- Be mindful -->
+        <div class="ingredient-row left-text">
+            <div class="text-box text-center">
+                <h4>Be mindful</h4>
+                <p>
+                    If we want to be well with ourselves, we need to learn to be well with
+                    our mind. This means intentional relaxation and rest. A very simple
+                    starting point? Breathing! But not like the kind you need to live.
+                    We mean practicing active, deep, conscious breathing. By setting time
+                    aside each day to sit and be with ourselves, we can find true balance
+                    within our daily habits and lifestyle.
+                </p>
+            </div>
+
+            <div class="image-box">
+                <img src="../../../assets/images/consciete.webp" class="w-75" alt="Be mindful">
+            </div>
+        </div>
+
+    </div>
+</section>

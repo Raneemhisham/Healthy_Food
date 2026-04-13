@@ -1,0 +1,152 @@
+h1,
+h2,
+h3,
+.h1,
+.h2,
+.h3 {
+    letter-spacing: 0.0313rem;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+/* *Navbar Style */
+
+
+
+/* *my-account */
+#my-account {
+
+    .container {
+
+        .menue {
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .content {
+            color: #787878;
+        }
+
+        .content-2 {
+            color: #000;
+        }
+
+        .user-name img {
+            width: 65px;
+            height: 65px;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .check-edit {
+            font-size: 11px;
+        }
+
+        .saved-edit {
+            font-size: 18px;
+        }
+
+        .user-name img{
+            border: #f1681858 2px solid !important;
+        }
+
+        .user-name img:hover {
+            border-color: #f16818 !important;
+        }
+
+        .icon-edit {
+            background-color: #F5F7F9;
+            border: 1px #F5F7F9 solid;
+            padding: 15px;
+            border-radius: 50%;
+        }
+    }
+
+    .menue:hover {
+        text-shadow: 2px 2px 5px #00A362;
+        transform: translateX(5%);
+    }
+
+    .menue-active {
+        /* text-shadow: 2px 2px 5px var(--main-color); */
+        /* transform: translateX(10%); */
+    }
+
+    .li:hover {
+        text-shadow: 2px 2px 5px red;
+    }
+
+    .form-control:focus {
+        color: #4e4e4e;
+        background-color: transparent;
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 .25rem rgba(255, 255, 255, 0.25);
+    }
+
+    #btnFind {
+        color: #f16818;
+        right: 0px;
+        transform: translateY(-50%);
+        transition: ease 0.3s;
+        border-color: white;
+    }
+
+    #btnFind:hover {
+        color: #f16818;
+        transform: translate(-8%, -50%);
+    }
+
+    .custom-btn1 {
+        transition: 0.2s ease;
+        background-color: #f16818;
+    }
+
+    .custom-btn {
+        transition: 0.2s ease;
+        border: 1px solid #f16818;
+        color: #f16818;
+    }
+
+    .custom-btn:hover {
+        transform: translateY(-15%);
+        background-color: #f16818;
+        color: #fff;
+    }
+
+    .custom-btn1:hover {
+        transform: translateY(-15%);
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+}
+
+
+
+
+
+
+
+
+@media (max-width: 768px) {
+
+    #my-account .container .user-name img {
+        width: 85px;
+        height: 85px;
+    }
+
+}

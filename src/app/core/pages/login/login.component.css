@@ -1,0 +1,56 @@
+a {
+  color: #f16818;
+}
+
+.all {
+  background-image: url(../../../../assets/images/mariah-hewines-J89GBos3avo-unsplash.jpg);
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+
+/* الكارد */
+.page-card {
+  background-color: rgba(39, 38, 38, 0.8);
+  border-radius: 10px;
+  box-shadow: -5px 2px 54px -9px rgba(194, 181, 181, 0.7);
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* زرار */
+.btn-outline-success {
+  --bs-btn-color: #f16818;
+  --bs-btn-border-color: #f16818;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #f16818;
+  --bs-btn-hover-border-color: #f16818;
+  --bs-btn-focus-shadow-rgb: 156, 74, 26;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #f16818;
+  --bs-btn-active-border-color: #f16818;
+  --bs-btn-disabled-color: #f16818;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #f16818;
+}
+
+/* inputs */
+.form-floating > .form-control {
+  height: 3rem;
+}
+
+/* 📱 Mobile */
+@media (max-width: 576px) {
+  .page-card {
+    padding: 16px;
+  }
+
+  .form-floating label {
+    font-size: 14px;
+  }
+
+  .btn {
+    font-size: 15px;
+  }
+}

@@ -1,0 +1,64 @@
+.nav-color {
+    background-color: rgba(178, 178, 178, 0.3);
+    backdrop-filter: blur(8px);
+
+}
+
+
+
+.navbar-toggler {
+    border: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='white' stroke-width='2' linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+
+.navbar-brand img{
+    cursor: pointer;
+}
+
+.navbar-nav .nav-link.active, .navbar-nav .nav-link.show {
+    color: #f16818;
+    font-weight: 700;   
+}
+
+.nav-link:focus, .nav-link:hover {
+    color: #f16818;
+}
+
+.btn-danger-edit{
+    background-color: #f16818;
+    transition: all 0.3s ease-in-out;
+    padding: 3px 10px;
+    border-radius: 7px;
+    border: transparent;
+    color: #fff;
+}
+
+.btn-danger-edit:hover{
+    background-color: #fff;
+    color: #f16818;
+}
+
+.btn-danger-edit2{
+    color: #f16818;
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-danger-edit2:hover{
+    background-color: #f16818;
+    color: black;
+}
+
+.nav-item2 {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    color: #ababab;
+    cursor: pointer;
+}

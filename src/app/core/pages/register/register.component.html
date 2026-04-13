@@ -1,0 +1,100 @@
+<main class="all3" *ngIf="step === 1">
+
+    <div class="d-flex justify-content-center align-items-center min-vh-100 px-3">
+        <div class="page-card">
+            <div class="m-auto w-100 p-2">
+
+                <h1 class="text-center">HEALTHY BITES</h1>
+
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="userName" placeholder="Name">
+                    <label>Your Name</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="userEmail" placeholder="name@example.com">
+                    <label>Email address</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="userPassword" placeholder="Password">
+                    <label>Password</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="userAge" placeholder="Age">
+                    <label>Age</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="tel" class="form-control" id="userPhone" placeholder="Phone">
+                    <label>Your phone</label>
+                </div>
+
+                <button class="btn btn-outline-success w-100" (click)="goToStep2()">
+                    NEXT
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<main class="all3" *ngIf="step === 2">
+
+    <div class="d-flex justify-content-center align-items-center min-vh-100 px-3">
+        <div class="page-card ">
+            <div class=" m-auto w-100 p-2 ">
+                <h1 class="text-center">HEALTHY BITES </h1>
+
+                <div class="form-floating mb-3  ">
+                    <input type="number" min="1" max="250" class="form-control" id="userhight" placeholder="170cm">
+                    <label for="userhight">Height(cm)</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="number" min="20" max="200" class="form-control" id="userWeight" placeholder="e.g 80kg">
+                    <label for="userWeight">weight(kg)</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+
+                        <option value="1">Diabetes</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                    <label for="floatingSelect">Health Condition</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+
+                        <option value="1">Little to no execise</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                    <label for="floatingSelect">Activity Level</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                        value="option1">
+                    <label class="form-check-label text-white" for="inlineRadio1">Male</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input  " type="radio" name="inlineRadioOptions" id="inlineRadio2"
+                        value="option2">
+                    <label class="form-check-label text-white " for="inlineRadio2">Female</label>
+                </div>
+
+                <button class="btn btn-outline-success w-100 mt-3 mb-3" (click)="register()">
+                    Register
+                </button>
+
+
+                <span class="p-4 text-white ">Already have an account? <a routerLink="/login"
+                        class="text-decoration-none  ">Login here</a></span>
+            </div>
+        </div>
+    </div>
+
+
+</main>

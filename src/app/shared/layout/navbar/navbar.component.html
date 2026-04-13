@@ -1,0 +1,95 @@
+<nav class="navbar navbar-expand-lg nav-color">
+  <div class="container-fluid">
+
+    <!-- Logo -->
+    <a class="navbar-brand ms-lg-5 ms-2" routerLink="/home">
+      <img src="assets/images/Screenshot_2025-12-11_233010-removebg-preview.png"
+           alt="Logo"
+           height="60">
+    </a>
+
+    <button class="navbar-toggler" type="button"
+  data-bs-toggle="collapse"
+  data-bs-target="#navbarSupportedContent">
+  <span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+
+      <!-- CENTER LINKS -->
+      <ul *ngIf="isLoggedIn"
+          class="navbar-nav ms-auto gap-4">
+
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/home"
+             [class.active]="isHomeRoute && !activeSection">
+            Home
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/recipes"
+             routerLinkActive="active">
+            Recipes
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/home"
+             fragment="values"
+             [class.active]="activeSection === 'values'">
+            Articles
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link"
+             routerLink="/resturant"
+             routerLinkActive="active">
+            Restaurants
+          </a>
+        </li>
+
+      </ul>
+
+      <!-- RIGHT SIDE -->
+      <ul class="navbar-nav ms-auto me-5 gap-3">
+
+        <!-- لو مش مسجل -->
+        <ng-container *ngIf="!isLoggedIn">
+          <li class="nav-item">
+            <a class="nav-link btn btn-outline-light px-3 btn-danger-edit"
+               routerLink="/login">
+              Login
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link btn btn-success px-3 btn-danger-edit2"
+               routerLink="/register">
+              Register
+            </a>
+          </li>
+        </ng-container>
+
+        <!-- لو مسجل -->
+        <li *ngIf="isLoggedIn" class="nav-item">
+          <button class=" btn-danger-edit"
+                  (click)="logout()">
+            Sign Out
+          </button>
+        </li>
+
+        <li *ngIf="isLoggedIn" class="nav-item2" >
+          <i class="fa-regular fa-circle-user fs-4" routerLink="/user-setting"></i>
+        </li>
+
+      </ul>
+
+    </div>
+  </div>
+</nav>

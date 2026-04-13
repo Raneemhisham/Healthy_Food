@@ -1,0 +1,71 @@
+.all3 {
+  background-image: url(../../../../assets/images/mariah-hewines-J89GBos3avo-unsplash.jpg);
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+
+a {
+  color: #f16818;
+}
+
+h1 {
+  font-family: "Source Code Pro", monospace;
+  color: #f16818;
+  margin-bottom: 20px;
+}
+
+/* Card */
+.page-card {
+  background-color: rgba(39, 38, 38, 0.8);
+  border-radius: 10px;
+  box-shadow: -5px 2px 54px -9px rgba(194, 181, 181, 0.7);
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Inputs */
+.form-floating > .form-control,
+.form-floating > .form-select {
+  height: 3rem;
+  min-height: 3rem;
+  line-height: 1;
+}
+
+/* Button */
+.btn-outline-success {
+  --bs-btn-color: #f16818;
+  --bs-btn-border-color: #f16818;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #f16818;
+  --bs-btn-hover-border-color: #f16818;
+  --bs-btn-focus-shadow-rgb: 156, 74, 26;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #f16818;
+  --bs-btn-active-border-color: #f16818;
+  --bs-btn-disabled-color: #f16818;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #f16818;
+}
+
+/* Hover */
+.btn-outline-success:hover {
+  transform: scale(1.03);
+  transition: 0.2s ease;
+}
+
+/* 📱 Mobile */
+@media (max-width: 576px) {
+  .page-card {
+    padding: 16px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  .form-check-label {
+    font-size: 14px;
+  }
+}

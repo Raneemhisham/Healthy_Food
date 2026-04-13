@@ -1,0 +1,68 @@
+.edit-notFound{
+    background-color: #fff;
+    position: relative;
+  text-align: center;
+}
+
+.btns-color{
+  border: transparent;
+  background-color: #f16818;
+  color: #fff;
+  transition: all 0.3s ease-in-out;
+}
+
+.btns-color:hover{
+  background-color: #e9e7e7;
+  color: #f16818;
+}
+
+.notfound-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.back-home-btn {
+  position: absolute;
+  bottom: 10%;      /* نسبة من ارتفاع الصورة */
+  left: 50%;        /* وسط العرض */
+  transform: translateX(-50%);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* شاشات التابلت */
+@media (max-width: 992px) {
+  .back-home-btn {
+    bottom: 20%;
+    font-size: 0.9rem;
+    padding: 8px 20px;
+  }
+}
+
+/* شاشات الموبايل */
+@media (max-width: 576px) {
+  .back-home-btn {
+    bottom: 19%;
+    font-size: 0.8rem;
+    padding: 6px 16px;
+  }
+}
+
+/* شاشات الموبايل */
+@media (max-width: 413px) {
+  .back-home-btn {
+    bottom: 28%;
+    font-size: 0.8rem;
+    padding: 6px 16px;
+  }
+}
+
+/* شاشات الموبايل */
+@media (max-width: 320px) {
+  .back-home-btn {
+    bottom: 16%;
+    font-size: 0.8rem;
+    padding: 6px 16px;
+  }
+}
