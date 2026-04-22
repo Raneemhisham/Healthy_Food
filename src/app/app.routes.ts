@@ -10,7 +10,6 @@ import { RecipeDetailsComponent } from './pages/recipe-details/recipe-details.co
 import { guestGuard } from './shared/guard/guest-guard.guard';
 import { authGuard } from './core/guard/auth.guard';
 import { UserSettingComponent } from './pages/user-setting/user-setting.component';
-import { ReportComponent } from './pages/report/report.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: "login", pathMatch: "full" },
@@ -19,7 +18,6 @@ export const routes: Routes = [
     { path: 'resturant', component: ResturantComponent },
     { path: 'recipe-details', component: RecipeDetailsComponent },
     { path: 'user-setting', component: UserSettingComponent, canActivate: [authGuard] },
-    { path: 'report', component: ReportComponent },
     { path: "notFound", component: NotFoundComponent },
     { path: "register", component: RegisterComponent, canActivate: [guestGuard] },
     { path: "login", component: LoginComponent, canActivate: [guestGuard] },
