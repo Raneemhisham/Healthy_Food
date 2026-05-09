@@ -1,17 +1,18 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../shared/services/auth.service';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-forget-password',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, FormsModule],
+  imports: [RouterLink, ReactiveFormsModule, CommonModule],
   templateUrl: './forget-password.component.html',
   styleUrl: './forget-password.component.css'
 })
 export class ForgetPasswordComponent {
-    constructor(
+  constructor(
     private authService: AuthService,
     private router: Router
   ) {}
@@ -19,85 +20,64 @@ export class ForgetPasswordComponent {
   steps = 1;
   apiErrorMessage = '';
   callingAPI = false;
+  savedEmail = '';
 
-  // STEP 1
+  // STEP 1 - Send email
   VerifyEmail = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email])
   });
 
   emailSubmit(form: FormGroup) {
-
+    if (form.invalid) { form.markAllAsTouched(); return; }
     this.callingAPI = true;
     this.apiErrorMessage = '';
+    this.savedEmail = form.value.email;
 
-    this.authService.verifyEmail(form.value).subscribe({
-      next: (res: any) => {
+    this.authService.forgotPassword(form.value.email).subscribe({
+      next: () => {
         this.callingAPI = false;
-        if (res.statusMsg === 'success') {
-          this.steps = 2;
-        }
+        this.steps = 2;
       },
       error: (err) => {
         this.callingAPI = false;
-        this.apiErrorMessage = err.error?.message;
+        this.apiErrorMessage = err.error?.message || 'Email not found.';
       }
     });
   }
 
-  // STEP 2
-  VerifyCode = new FormGroup({
-    resetCode: new FormControl('', [
-      Validators.required,
-      Validators.pattern(/^\w{6}$/)
-    ])
-  });
-
-  CodeSubmit(form: FormGroup) {
-
-    this.callingAPI = true;
-
-    this.authService.verifyCode(form.value).subscribe({
-      next: (res: any) => {
-        this.callingAPI = false;
-        if (res.status === 'Success') {
-          this.steps = 3;
-        }
-      },
-      error: (err) => {
-        this.callingAPI = false;
-        this.apiErrorMessage = err.error?.message;
-      }
-    });
-  }
-
-  // STEP 3
+  // STEP 2 & 3 - Reset password with token
   resetPass = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
+    token: new FormControl('', [Validators.required]),
     newPassword: new FormControl('', [
       Validators.required,
-      Validators.pattern(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/)
+      Validators.pattern(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*\-]).{8,}$/)
     ])
   });
 
   resetSubmit(form: FormGroup) {
-
+    if (form.invalid) { form.markAllAsTouched(); return; }
     this.callingAPI = true;
+    this.apiErrorMessage = '';
 
-    this.authService.resetPassword(form.value).subscribe({
-      next: (res: any) => {
+    const payload = {
+      email: this.savedEmail,
+      token: form.value.token,
+      newPassword: form.value.newPassword
+    };
+
+    this.authService.resetPassword(payload).subscribe({
+      next: () => {
         this.callingAPI = false;
         this.router.navigate(['/login']);
       },
       error: (err) => {
         this.callingAPI = false;
-        this.apiErrorMessage = err.error?.message;
+        this.apiErrorMessage = err.error?.message || 'Invalid or expired token.';
       }
     });
   }
 
-  retriveControl(name: string) {
-    if (this.steps === 1) return this.VerifyEmail.get(name);
-    if (this.steps === 2) return this.VerifyCode.get(name);
-    return this.resetPass.get(name);
+  retriveControl(formGroup: FormGroup, name: string) {
+    return formGroup.get(name);
   }
 }

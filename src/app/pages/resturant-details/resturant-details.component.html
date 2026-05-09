@@ -1,0 +1,101 @@
+<div class="details-page" *ngIf="!isLoading && restaurant">
+
+  <!-- Hero -->
+  <div class="details-hero" [style.background-image]="'url(' + getImageUrl() + ')'">
+    <div class="hero-overlay">
+      <button class="back-btn" (click)="goBack()">← Back</button>
+      <div class="hero-content">
+        <h1 class="restaurant-title">{{ restaurant.name }}</h1>
+        <div class="hero-tags">
+          <span class="tag category-tag">{{ restaurant.category }}</span>
+          <span class="tag location-tag" *ngIf="restaurant.branch">📍 {{ restaurant.branch }}, {{ restaurant.city }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="details-body">
+
+    <!-- Info Card -->
+    <div class="info-card">
+      <div class="info-row" *ngIf="restaurant.phone">
+        <span class="info-icon">📞</span>
+        <a [href]="'tel:' + restaurant.phone" class="info-value">{{ restaurant.phone }}</a>
+      </div>
+      <div class="info-row" *ngIf="restaurant.address">
+        <span class="info-icon">🏠</span>
+        <span class="info-value">{{ restaurant.address }}, {{ restaurant.city }}</span>
+      </div>
+      <div class="info-row" *ngIf="restaurant.googleMapsLink">
+        <span class="info-icon">🗺️</span>
+        <button class="maps-btn" (click)="openMaps()">Open in Google Maps</button>
+      </div>
+      <div class="info-row" *ngIf="restaurant.hasMenuOnline">
+        <span class="info-icon">📱</span>
+        <span class="info-value online-text">Menu available online ✓</span>
+      </div>
+    </div>
+
+    <!-- Rating summary -->
+    <div class="rating-card">
+      <div class="rating-left">
+        <span class="rating-number">{{ averageRating | number:'1.1-1' }}</span>
+        <div class="rating-stars">
+          <span *ngFor="let filled of getStars(averageRating)"
+            class="star" [class.filled]="filled">★</span>
+        </div>
+        <span class="rating-count">{{ reviews.length }} reviews</span>
+      </div>
+      <button class="add-review-btn" (click)="showReviewForm = !showReviewForm">
+        {{ showReviewForm ? '✕ Cancel' : '+ Write a Review' }}
+      </button>
+    </div>
+
+    <!-- Review Form -->
+    <div class="review-form-block" *ngIf="showReviewForm">
+      <h3 class="section-heading">Your Review</h3>
+      <div class="stars-input-row">
+        <span class="rating-label">Rating:</span>
+        <div class="stars-input">
+          <span *ngFor="let i of [1,2,3,4,5]"
+            class="star-input" [class.active]="i <= reviewRating"
+            (click)="reviewRating = i">★</span>
+        </div>
+      </div>
+      <textarea class="review-textarea" rows="4"
+        placeholder="Share your experience..."
+        [(ngModel)]="reviewComment"></textarea>
+      <div *ngIf="reviewSuccess" class="alert-success">{{ reviewSuccess }}</div>
+      <div *ngIf="reviewError" class="alert-error">{{ reviewError }}</div>
+      <button class="submit-btn" (click)="submitReview()"
+        [disabled]="isSubmitting || !reviewComment.trim()">
+        {{ isSubmitting ? 'Submitting...' : 'Submit Review' }}
+      </button>
+    </div>
+
+    <!-- Reviews -->
+    <div class="section-block">
+      <h3 class="section-heading">Customer Reviews</h3>
+      <div *ngIf="reviews.length === 0" class="no-reviews">
+        No reviews yet. Be the first!
+      </div>
+      <div class="review-item" *ngFor="let review of reviews">
+        <div class="review-header">
+          <div class="reviewer-avatar">{{ (review.userName || 'U')[0].toUpperCase() }}</div>
+          <div class="reviewer-info">
+            <span class="reviewer-name">{{ review.userName || 'Customer' }}</span>
+            <div class="review-stars">
+              <span *ngFor="let filled of getStars(review.rating)"
+                class="star small" [class.filled]="filled">★</span>
+            </div>
+          </div>
+          <span class="review-date" *ngIf="review.createdAt">
+            {{ review.createdAt | date:'MMM d, y' }}
+          </span>
+        </div>
+        <p class="review-comment">{{ review.comment }}</p>
+      </div>
+    </div>
+
+  </div>
+</div>

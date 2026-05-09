@@ -1,100 +1,138 @@
+<!-- STEP 1 -->
 <main class="all3" *ngIf="step === 1">
+  <div class="d-flex justify-content-center align-items-center min-vh-100 px-3">
+    <div class="page-card">
+      <div class="m-auto w-100 p-2">
+        <h1 class="text-center">HEALTHY BITES</h1>
 
-    <div class="d-flex justify-content-center align-items-center min-vh-100 px-3">
-        <div class="page-card">
-            <div class="m-auto w-100 p-2">
+        <form [formGroup]="step1Form">
 
-                <h1 class="text-center">HEALTHY BITES</h1>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="userName" placeholder="Name" formControlName="name"
+              [class.is-invalid]="getControl(step1Form,'name')?.invalid && getControl(step1Form,'name')?.touched">
+            <label>Your Name</label>
+            <div class="invalid-feedback">Please enter your name.</div>
+          </div>
 
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="userName" placeholder="Name">
-                    <label>Your Name</label>
-                </div>
+          <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="userEmail" placeholder="name@example.com" formControlName="email"
+              [class.is-invalid]="getControl(step1Form,'email')?.invalid && getControl(step1Form,'email')?.touched">
+            <label>Email address</label>
+            <div class="invalid-feedback">Please enter a valid email.</div>
+          </div>
 
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="userEmail" placeholder="name@example.com">
-                    <label>Email address</label>
-                </div>
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="userPassword" placeholder="Password" formControlName="password"
+              [class.is-invalid]="getControl(step1Form,'password')?.invalid && getControl(step1Form,'password')?.touched">
+            <label>Password</label>
+            <div class="invalid-feedback">Password must be at least 8 characters.</div>
+          </div>
 
-                <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="userPassword" placeholder="Password">
-                    <label>Password</label>
-                </div>
+          <div class="form-floating mb-3">
+            <input type="number" class="form-control" id="userAge" placeholder="Age" formControlName="age"
+              [class.is-invalid]="getControl(step1Form,'age')?.invalid && getControl(step1Form,'age')?.touched">
+            <label>Age</label>
+            <div class="invalid-feedback">Please enter a valid age.</div>
+          </div>
 
-                <div class="form-floating mb-3">
-                    <input type="number" class="form-control" id="userAge" placeholder="Age">
-                    <label>Age</label>
-                </div>
+          <button class="btn btn-outline-success w-100" type="button" (click)="goToStep2()">
+            NEXT
+          </button>
 
-                <div class="form-floating mb-3">
-                    <input type="tel" class="form-control" id="userPhone" placeholder="Phone">
-                    <label>Your phone</label>
-                </div>
+          <div class="text-center mt-3">
+            <span class="text-white">Already have an account? <a routerLink="/login" class="text-decoration-none">Login here</a></span>
+          </div>
 
-                <button class="btn btn-outline-success w-100" (click)="goToStep2()">
-                    NEXT
-                </button>
-
-            </div>
-        </div>
+        </form>
+      </div>
     </div>
-
+  </div>
 </main>
 
+<!-- STEP 2 -->
 <main class="all3" *ngIf="step === 2">
+  <div class="d-flex justify-content-center align-items-center min-vh-100 px-3">
+    <div class="page-card">
+      <div class="m-auto w-100 p-2">
+        <h1 class="text-center">HEALTHY BITES</h1>
 
-    <div class="d-flex justify-content-center align-items-center min-vh-100 px-3">
-        <div class="page-card ">
-            <div class=" m-auto w-100 p-2 ">
-                <h1 class="text-center">HEALTHY BITES </h1>
+        <form [formGroup]="step2Form">
 
-                <div class="form-floating mb-3  ">
-                    <input type="number" min="1" max="250" class="form-control" id="userhight" placeholder="170cm">
-                    <label for="userhight">Height(cm)</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="number" min="20" max="200" class="form-control" id="userWeight" placeholder="e.g 80kg">
-                    <label for="userWeight">weight(kg)</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+          <div class="form-floating mb-3">
+            <input type="number" min="50" max="250" class="form-control" id="userhight" placeholder="170cm" formControlName="height"
+              [class.is-invalid]="getControl(step2Form,'height')?.invalid && getControl(step2Form,'height')?.touched">
+            <label for="userhight">Height (cm)</label>
+            <div class="invalid-feedback">Please enter a valid height.</div>
+          </div>
 
-                        <option value="1">Diabetes</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                    <label for="floatingSelect">Health Condition</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+          <div class="form-floating mb-3">
+            <input type="number" min="10" max="300" class="form-control" id="userWeight" placeholder="e.g 80kg" formControlName="weight"
+              [class.is-invalid]="getControl(step2Form,'weight')?.invalid && getControl(step2Form,'weight')?.touched">
+            <label for="userWeight">Weight (kg)</label>
+            <div class="invalid-feedback">Please enter a valid weight.</div>
+          </div>
 
-                        <option value="1">Little to no execise</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                    <label for="floatingSelect">Activity Level</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
-                        value="option1">
-                    <label class="form-check-label text-white" for="inlineRadio1">Male</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input  " type="radio" name="inlineRadioOptions" id="inlineRadio2"
-                        value="option2">
-                    <label class="form-check-label text-white " for="inlineRadio2">Female</label>
-                </div>
+          <!-- Health Condition من الـ API -->
+          <div class="form-floating mb-3">
+            <select class="form-select" formControlName="diseaseId"
+              [class.is-invalid]="getControl(step2Form,'diseaseId')?.invalid && getControl(step2Form,'diseaseId')?.touched">
+              <option value="">-- Select your condition --</option>
+              <option *ngFor="let d of diseases" [value]="d.id">{{ d.name }}</option>
+            </select>
+            <label>Health Condition</label>
+            <div class="invalid-feedback">Please select your health condition.</div>
+          </div>
 
-                <button class="btn btn-outline-success w-100 mt-3 mb-3" (click)="register()">
-                    Register
-                </button>
+          <!-- Activity Level -->
+          <div class="form-floating mb-3">
+            <select class="form-select" formControlName="activityLevel">
+              <option value="Sedentary">Little to no exercise</option>
+              <option value="Light">Light exercise (1-3 days/week)</option>
+              <option value="Moderate">Moderate exercise (3-5 days/week)</option>
+              <option value="Active">Heavy exercise (6-7 days/week)</option>
+              <option value="VeryActive">Very heavy exercise / physical job</option>
+            </select>
+            <label>Activity Level</label>
+          </div>
 
+          <!-- Goal -->
+          <div class="form-floating mb-3">
+            <select class="form-select" formControlName="goal">
+              <option value="lose">Weight Loss</option>
+              <option value="gain">Weight Gain</option>
+              <option value="maintain">Maintenance</option>
+            </select>
+            <label>Your Goal</label>
+          </div>
 
-                <span class="p-4 text-white ">Already have an account? <a routerLink="/login"
-                        class="text-decoration-none  ">Login here</a></span>
+          <!-- Gender -->
+          <div class="mb-3">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" id="inlineRadio1"
+                value="Male" formControlName="gender">
+              <label class="form-check-label text-white" for="inlineRadio1">Male</label>
             </div>
-        </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" id="inlineRadio2"
+                value="Female" formControlName="gender">
+              <label class="form-check-label text-white" for="inlineRadio2">Female</label>
+            </div>
+          </div>
+
+          <div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
+
+          <button class="btn btn-outline-success w-100 mt-2 mb-3" type="button"
+            (click)="register()" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+            {{ isLoading ? 'Registering...' : 'Register' }}
+          </button>
+
+          <button class="btn btn-link text-white w-100" type="button" (click)="step = 1">
+            ← Back
+          </button>
+
+        </form>
+      </div>
     </div>
-
-
+  </div>
 </main>

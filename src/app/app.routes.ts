@@ -6,6 +6,7 @@ import { LoginComponent } from './core/pages/login/login.component';
 import { ForgetPasswordComponent } from './core/pages/forget-password/forget-password.component';
 import { RecipesComponent } from './pages/recipes/recipes.component';
 import { ResturantComponent } from './pages/resturant/resturant.component';
+import { ResturantDetailsComponent } from './pages/resturant-details/resturant-details.component';
 import { RecipeDetailsComponent } from './pages/recipe-details/recipe-details.component';
 import { guestGuard } from './shared/guard/guest-guard.guard';
 import { authGuard } from './core/guard/auth.guard';
@@ -14,15 +15,14 @@ import { UserSettingComponent } from './pages/user-setting/user-setting.componen
 export const routes: Routes = [
     { path: '', redirectTo: "login", pathMatch: "full" },
     { path: 'home', component: HomeComponent, canActivate: [authGuard] },
-    { path: 'recipes', component: RecipesComponent },
-    { path: 'resturant', component: ResturantComponent },
-    { path: 'recipe-details', component: RecipeDetailsComponent },
+    { path: 'recipes', component: RecipesComponent, canActivate: [authGuard] },
+    { path: 'recipe-details', component: RecipeDetailsComponent, canActivate: [authGuard] },
+    { path: 'resturant', component: ResturantComponent, canActivate: [authGuard] },
+    { path: 'resturant-details', component: ResturantDetailsComponent, canActivate: [authGuard] },
     { path: 'user-setting', component: UserSettingComponent, canActivate: [authGuard] },
     { path: "notFound", component: NotFoundComponent },
     { path: "register", component: RegisterComponent, canActivate: [guestGuard] },
     { path: "login", component: LoginComponent, canActivate: [guestGuard] },
     { path: "forget_pass", component: ForgetPasswordComponent },
-
-
     { path: "**", component: NotFoundComponent },
 ];

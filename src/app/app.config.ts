@@ -1,16 +1,16 @@
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter, RouterModule } from '@angular/router';
-
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient, withFetch } from '@angular/common/http';
-import { provideToastr } from 'ngx-toastr';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './shared/services/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes),
+  providers: [
+    provideRouter(routes),
     provideClientHydration(),
-    provideAnimations(), 
+    provideAnimations(),
     importProvidersFrom(
       RouterModule.forRoot(routes, {
         anchorScrolling: 'enabled',
@@ -18,5 +18,6 @@ export const appConfig: ApplicationConfig = {
         scrollOffset: [0, 0]
       })
     ),
-    provideHttpClient(withFetch())]
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor]))
+  ]
 };

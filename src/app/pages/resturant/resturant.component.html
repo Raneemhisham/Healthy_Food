@@ -1,97 +1,72 @@
-<!-- Team Section -->
-<section class="team-section" id="resturant">
-    <div class="text-content">
-        <div class="About-content text-center">
-            <h2 class="Aboutus fs-1 fw-bolder mb-5" data-bigletter="Resturant">
-                Fresh & Tasty
-            </h2>
-            <hr>
-        </div>
+<div class="recipes-hero">
+    <h1 class="recipes-hero-title">Restaurants</h1>
+    <p class="recipes-hero-sub">Find healthy dining options near you</p>
+  </div>
+
+<section class="resturant-section">
+  
+  <div class="container py-4">
+    
+
+    <!-- Search + badge -->
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+      <div class="search-wrapper flex-grow-1">
+        <i class="fa fa-search search-icon"></i>
+        <input class="search-input" type="search"
+          placeholder="Search by name, city, or category..."
+          [(ngModel)]="searchQuery" (input)="onSearch()">
+      </div>
+      <span *ngIf="diseaseName" class="disease-badge">🩺 {{ diseaseName }}</span>
     </div>
 
-
-
-    <div class="container py-4">
-        <div class="row g-4 py-5">
-
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 poin-card">
-                <div class="team-card text-center shadow-sm">
-                    <img src="../../../assets/images/download.jpg" class="img-fluid rounded-top"
-                        alt="food">
-                    <div class="team-name"> Ruby Tuesday <br> Cherry Tomato, Cucumber, and Mozzarella Skewers
-                    </div>
-                </div>
-            </div>
-           
-
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 poin-card">
-                <div class="team-card text-center shadow-sm">
-                    <img src="../../../assets/images/download2.jpg" class="img-fluid rounded-top"
-                        alt="food">
-                    <div class="team-name"> Home Resturant <br> Cherry Tomato, Cucumber, and Mozzarella Skewers
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 poin-card">
-                <div class="team-card text-center shadow-sm">
-                    <img src="../../../assets/images/download.jpg" class="img-fluid rounded-top"
-                        alt="food">
-                    <div class="team-name"> Ruby Tuesday <br> Cherry Tomato, Cucumber, and Mozzarella Skewers
-                    </div>
-                </div>
-            </div>
-           
-
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 poin-card">
-                <div class="team-card text-center shadow-sm">
-                    <img src="../../../assets/images/download2.jpg" class="img-fluid rounded-top"
-                        alt="food">
-                    <div class="team-name"> Home Resturant <br> Cherry Tomato, Cucumber, and Mozzarella Skewers
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 poin-card">
-                <div class="team-card text-center shadow-sm">
-                    <img src="../../../assets/images/download.jpg" class="img-fluid rounded-top"
-                        alt="food">
-                    <div class="team-name"> Ruby Tuesday <br> Cherry Tomato, Cucumber, and Mozzarella Skewers
-                    </div>
-                </div>
-            </div>
-           
-
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 poin-card">
-                <div class="team-card text-center shadow-sm">
-                    <img src="../../../assets/images/download2.jpg" class="img-fluid rounded-top"
-                        alt="food">
-                    <div class="team-name"> Home Resturant <br> Cherry Tomato, Cucumber, and Mozzarella Skewers
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 poin-card">
-                <div class="team-card text-center shadow-sm">
-                    <img src="../../../assets/images/download.jpg" class="img-fluid rounded-top"
-                        alt="food">
-                    <div class="team-name"> Ruby Tuesday <br> Cherry Tomato, Cucumber, and Mozzarella Skewers
-                    </div>
-                </div>
-            </div>
-           
-
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 poin-card">
-                <div class="team-card text-center shadow-sm">
-                    <img src="../../../assets/images/download2.jpg" class="img-fluid rounded-top"
-                        alt="food">
-                    <div class="team-name"> Home Resturant <br> Cherry Tomato, Cucumber, and Mozzarella Skewers
-                    </div>
-                </div>
-            </div>
-
-            
-
-        </div>
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-success"></div>
+      <p class="mt-2 text-muted">Loading restaurants...</p>
     </div>
+
+    <!-- No results -->
+    <div *ngIf="!isLoading && filteredRestaurants.length === 0" class="text-center py-5">
+      <p class="text-muted fs-5">No restaurants found.</p>
+    </div>
+
+    <!-- Cards -->
+    <div class="restaurants-grid" *ngIf="!isLoading">
+      <div class="restaurant-card" *ngFor="let r of filteredRestaurants"
+           (click)="openDetails(r)">
+
+        <!-- Rating badge -->
+        <div class="rating-badge" *ngIf="r.averageRating">
+          ★ {{ r.averageRating | number:'1.1-1' }}
+        </div>
+
+        <div class="card-img-wrapper">
+          <img [src]="getImageUrl(r)" [alt]="r.name" class="card-img">
+          <div class="card-overlay">
+            <span class="card-category">{{ r.category }}</span>
+          </div>
+        </div>
+
+        <div class="card-body-content">
+          <h5 class="card-restaurant-name">{{ r.name }}</h5>
+
+          <div class="card-meta">
+            <span class="meta-item" *ngIf="r.branch || r.city">
+              📍 {{ r.branch }}{{ r.city ? ', ' + r.city : '' }}
+            </span>
+            <span class="meta-item" *ngIf="r.phone">
+              📞 {{ r.phone }}
+            </span>
+          </div>
+
+          <div class="card-footer-row">
+            <span class="reviews-count" *ngIf="r.reviews?.length > 0">
+              {{ r.reviews.length }} review{{ r.reviews.length !== 1 ? 's' : '' }}
+            </span>
+            <span class="online-badge" *ngIf="r.hasMenuOnline">Menu Online ✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

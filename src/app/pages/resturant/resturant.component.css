@@ -1,93 +1,84 @@
-.text-content {
-  padding: 100px 0;
-  /* background-color: #eeeff0; */
-  background-image: linear-gradient(rgba(1, 1, 1, 0.5), rgba(1, 1, 1, 0.5)), url(../../../assets/images/shadows-made-by-daylight-city-with-architecture.webp);
-  background-position: center center;
-  background-attachment: fixed;
-  background-size: cover;
-}
+.resturant-section { min-height: 100vh; padding: 2rem 0; background: #f9fafb; }
 
-.About-content p {
-  font-size: 18px;
-}
-
-.Aboutus {
-  position: relative;
-  color: #f16818;
-}
-
-.Aboutus::before {
-  content: attr(data-bigletter);
-  position: absolute;
-  font-size: 2em;
-  opacity: .1;
-  top: -0.5em;
-  left: 0;
-  right: 0;
-  margin: auto;
-  text-transform: uppercase;
+/* .section-title { font-size: 2rem; font-weight: 800; color: #1a1a2e; } */
+.recipes-hero {
+  background: linear-gradient(135deg, #1a1a2e 0%, #f16818 100%);
+  padding: 4rem 2rem;
+  text-align: center;
   color: #fff;
 }
+.recipes-hero-title { font-size: 3rem; font-weight: 900; letter-spacing: 2px; margin: 0; }
+.recipes-hero-sub { font-size: 1.1rem; opacity: 0.85; margin-top: 8px; }
 
-.About-content hr {
-  width: 40px;
-  border-top: 2px solid #f16818;
-  margin: 0 auto 20px;
-  transition: all .3s;
-  margin-top: 20px;
+.search-wrapper { position: relative; max-width: 500px; }
+.search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; }
+.search-input {
+  width: 100%; padding: 12px 16px 12px 40px;
+  border: 1.5px solid #e5e7eb; border-radius: 50px;
+  font-size: 14px; outline: none; transition: border 0.2s;
+}
+.search-input:focus { border-color: #f16818; }
+.disease-badge {
+  background: #f16818; color: #fff;
+  padding: 8px 18px; border-radius: 50px;
+  font-size: 13px; font-weight: 600;
 }
 
-.About-content:hover hr {
-  width: 80px;
+.restaurants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
 }
 
-.team-section {
-  padding: 30px 0 0 0;
-}
-
-.team-card {
-  border-radius: 12px;
-  overflow: hidden;
-  background: #fff;
-  transition: transform 0.2s ease-in-out;
-}
-
-.team-card:hover {
-  transform: translateY(-5px);
-}
-
-.team-card img {
-  width: 100%;
-  height: 310px;
-  object-fit: cover;
-}
-
-.team-name {
-  background: #f16818;
-  /* كحلي غامق */
-  color: #fff;
-  font-weight: 600;
-  padding: 10px;
-  font-size: 16px;
-}
-
-.poin-card{
+.restaurant-card {
+  background: #fff; border-radius: 16px;
+  overflow: hidden; position: relative;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
   cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.restaurant-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(241,104,24,0.15);
 }
 
-.text-edit {
-  color: #009447;
-  font-size: 30px;
+.rating-badge {
+  position: absolute; top: 12px; right: 12px; z-index: 2;
+  background: rgba(0,0,0,0.65);
+  color: #f59e0b; font-weight: 700; font-size: 13px;
+  padding: 4px 10px; border-radius: 20px;
+  backdrop-filter: blur(4px);
 }
 
-@media (max-width: 575px) {
-  .team-card img {
+.card-img-wrapper { height: 180px; overflow: hidden; position: relative; }
+.card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+.restaurant-card:hover .card-img { transform: scale(1.05); }
+.card-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.55));
+  padding: 8px 12px;
+}
+.card-category {
+  color: #fff; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+}
 
-    height: 360px;
+.card-body-content { padding: 14px 16px; }
+.card-restaurant-name {
+  font-size: 16px; font-weight: 700;
+  color: #1a1a2e; margin-bottom: 8px;
+}
 
-  }
+.card-meta { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.meta-item { font-size: 13px; color: #6b7280; }
 
-  .team-section {
-    padding: 30px 0 0 0;
-  }
+.card-footer-row {
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid #f3f4f6; padding-top: 10px;
+}
+.reviews-count { font-size: 12px; color: #9ca3af; }
+.online-badge {
+  font-size: 11px; color: #16a34a;
+  background: #d1fae5; padding: 3px 8px;
+  border-radius: 20px; font-weight: 600;
 }

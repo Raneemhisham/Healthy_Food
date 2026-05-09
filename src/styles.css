@@ -59,3 +59,87 @@ app-root {
   scrollbar-width: thin;
   scrollbar-color: #f16818 rgba(255,255,255,0.8); /* اللون + خلفية */
 }
+
+/* ===== Custom Modal (shared) ===== */
+.custom-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.custom-modal-content {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+/* ===== Home form grid ===== */
+.form-box {
+  background: rgba(255,255,255,0.06);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.form-grid input,
+.form-grid select,
+.gender-box {
+  padding: 0.55rem 0.85rem;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 0.5rem;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.form-grid input::placeholder { color: rgba(255,255,255,0.5); }
+
+.form-grid input.is-invalid {
+  border-color: #f87171;
+}
+
+.gender-box select {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border: none;
+}
+
+.gender-box label { color: rgba(255,255,255,0.7); white-space: nowrap; }
+
+.submit-btn {
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  border-radius: 0.6rem;
+  font-weight: 600;
+  padding: 0.65rem 1.5rem;
+  transition: background 0.2s;
+}
+.submit-btn:hover { background: #16a34a; }
+.submit-btn:disabled { background: #6b7280; }
+
+@media (max-width: 576px) {
+  .form-grid { grid-template-columns: 1fr; }
+}

@@ -1,32 +1,24 @@
 <header class="sec-1 d-flex align-items-center">
     <div class="container">
         <div class="row align-items-center text-center text-md-start">
-
             <div class="col-md-6">
                 <h1 class="title">Taste The Goodness</h1>
-                <p class="subtitle">
-                    Fresh, healthy and delicious meals for your daily lifestyle.
-                </p>
+                <p class="subtitle">Fresh, healthy and delicious meals for your daily lifestyle.</p>
             </div>
-
             <div class="col-md-6 mt-4 mt-md-0">
                 <img src="assets/images/fbc934bd-96de-4a53-b2dc-cf5f09f58b98.png" alt="" class="img-fluid hero-img" />
             </div>
-
         </div>
     </div>
 </header>
 
-
-
+<!-- CALORIES CARD -->
 <div class="container card-1 py-5">
-
     <div class="header d-flex justify-content-between align-items-center flex-wrap">
         <div class="profile d-flex align-items-center gap-2">
             <div class="avatar"></div>
             <h2 class="mb-0">Today</h2>
         </div>
-
         <div class="streak text-end">
             1 DAY <br>
             <span>STREAK</span>
@@ -39,284 +31,223 @@
                 <h3>Calories</h3>
                 <p class="sub">Remaining = Goal - Food + Exercise</p>
 
-                <div class="row align-items-center gy-3">
+                <div *ngIf="caloriesLoading" class="text-center py-3">
+                    <div class="spinner-border text-success"></div>
+                </div>
+
+                <div *ngIf="!caloriesLoading" class="row align-items-center gy-3">
                     <div class="col-12 col-md-5 text-center">
                         <div class="circle mx-auto">
-                            <span>2480</span>
+                            <span>{{ caloriesRemaining }}</span>
                             <small>Remaining</small>
                         </div>
                     </div>
-
                     <div class="col-12 col-md-7">
                         <div class="details">
-                            <p>🏁 Base Goal <b>2480</b></p>
-                            <p>🍽️ Food <b>0</b></p>
-                            <p>🔥 Exercise <b>0</b></p>
+                            <p>🏁 Base Goal <b>{{ dailyCalories?.goal || 0 }}</b></p>
+                            <p>🍽️ Food <b>{{ dailyCalories?.food || 0 }}</b></p>
+                            <p>🔥 Exercise <b>{{ dailyCalories?.exercise || 0 }}</b></p>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
+    <!-- HEALTH PREDICTION SECTION -->
+    <div class="text-center mt-5">
+        <p class="desc">Enter your health data to generate a personalized report</p>
 
+        <!-- Disease badge -->
+        <div *ngIf="diseaseName" class="mb-3">
+            <span class="badge px-3 py-2 fs-6">{{ diseaseName }}</span>
+        </div>
 
-<div class="text-center mt-3">
-    <label>Choose Disease for Testing: </label>
-    <select [(ngModel)]="diseaseType" class="p-2 ms-2 rounded" style="border: 1px solid #ccc;">
-        <option value="hypertension">Hypertension</option>
-        <option value="type1">Type 1 Diabetes</option>
-        <option value="type2">Type 2 Diabetes</option>
-    </select>
-</div>
+        <button class="btn main-btn" (click)="toggleForm()">
+            {{ showForm ? 'Close Form' : 'Start Now' }}
+        </button>
+    </div>
 
-<div class="text-center mt-5">
-    <p class="desc">Enter your health data to generate a personalized report</p>
-    <button class="btn main-btn" (click)="toggleForm()">
-        {{ showForm ? 'Close Form' : 'Start Now' }}
-    </button>
-</div>
+    <!-- لو مش عنده مرض مسجل -->
+    <div *ngIf="!diseaseType && !showForm" class="text-center mt-3">
+        <p class="text-warning">No health condition registered. <a routerLink="/user-setting" class="text-success">Update your profile</a></p>
+    </div>
 
-<div *ngIf="showForm" class="form-box mt-4">
+    <!-- FORMS -->
+    <div *ngIf="showForm && diseaseType" class="form-box mt-4">
 
-    <form *ngIf="diseaseType === 'hypertension'" [formGroup]="hypertensionForm" (ngSubmit)="submitForm()">
-        <div class="form-grid">
-            <input type="number" formControlName="current_sbp" placeholder="Systolic BP">
-            <input type="number" formControlName="current_dbp" placeholder="Diastolic BP">
-            <input type="number" formControlName="sodium_mg" placeholder="Sodium (mg)">
-            <input type="number" formControlName="potassium_mg" placeholder="Potassium (mg)">
-            <input type="number" formControlName="age" placeholder="Age">
-            <input type="number" formControlName="weight" placeholder="Weight (kg)">
-            <div class="gender-box d-flex align-items-center">
-                <label class="me-2">Gender:</label>
-                <select formControlName="gender" class="flex-grow-1">
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
+        <!-- Hypertension Form -->
+        <form *ngIf="diseaseType === 'hypertension'" [formGroup]="hypertensionForm" (ngSubmit)="submitForm()">
+            <div class="form-grid">
+                <input type="number" formControlName="current_sbp" placeholder="Systolic BP"
+                    [class.is-invalid]="hypertensionForm.get('current_sbp')?.invalid && hypertensionForm.get('current_sbp')?.touched">
+                <input type="number" formControlName="current_dbp" placeholder="Diastolic BP"
+                    [class.is-invalid]="hypertensionForm.get('current_dbp')?.invalid && hypertensionForm.get('current_dbp')?.touched">
+                <input type="number" formControlName="sodium_mg" placeholder="Sodium (mg)">
+                <input type="number" formControlName="potassium_mg" placeholder="Potassium (mg)">
+                <input type="number" formControlName="age" placeholder="Age"
+                    [class.is-invalid]="hypertensionForm.get('age')?.invalid && hypertensionForm.get('age')?.touched">
+                <input type="number" formControlName="weight" placeholder="Weight (kg)"
+                    [class.is-invalid]="hypertensionForm.get('weight')?.invalid && hypertensionForm.get('weight')?.touched">
+                <div class="gender-box d-flex align-items-center">
+                    <label class="me-2">Gender:</label>
+                    <select formControlName="gender" class="flex-grow-1">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="gender-box d-flex align-items-center">
+                    <label class="me-2">On BP Med:</label>
+                    <select formControlName="on_bp_med" class="flex-grow-1">
+                        <option [ngValue]="0">No</option>
+                        <option [ngValue]="1">Yes</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn submit-btn mt-4 w-100" type="submit" [disabled]="isLoading">
+                {{ isLoading ? 'Generating...' : 'Generate Report' }}
+            </button>
+        </form>
+
+        <!-- Type 1 Diabetes Form -->
+        <form *ngIf="diseaseType === 'type1'" [formGroup]="type1Form" (ngSubmit)="submitForm()">
+            <div class="form-grid">
+                <input type="number" formControlName="baseline_glucose" placeholder="Baseline Glucose (mmol/L)"
+                    [class.is-invalid]="type1Form.get('baseline_glucose')?.invalid && type1Form.get('baseline_glucose')?.touched">
+                <input type="number" formControlName="carbs_g" placeholder="Carbohydrates (g)">
+                <input type="number" formControlName="meal_calories" placeholder="Meal Calories (kcal)">
+                <input type="number" formControlName="minutes_since_meal" placeholder="Minutes Since Meal">
+                <input type="number" formControlName="heart_rate" placeholder="Heart Rate (bpm)">
+                <input type="number" formControlName="insulin_units" placeholder="Insulin Units">
+                <select formControlName="activity_level">
+                    <option value="Sedentary">Sedentary</option>
+                    <option value="Moderate">Moderate</option>
+                    <option value="Active">Active</option>
                 </select>
             </div>
-            <div class="gender-box d-flex align-items-center">
-                <label class="me-2">On BP Med:</label>
-                <select formControlName="on_bp_med" class="flex-grow-1">
-                    <option [ngValue]="0">No</option>
-                    <option [ngValue]="1">Yes</option>
-                </select>
+            <button class="btn submit-btn mt-4 w-100" type="submit" [disabled]="isLoading">
+                {{ isLoading ? 'Generating...' : 'Generate Report' }}
+            </button>
+        </form>
+
+        <!-- Type 2 Diabetes Form -->
+        <form *ngIf="diseaseType === 'type2'" [formGroup]="type2Form" (ngSubmit)="submitForm()">
+            <div class="form-grid">
+                <input type="text" formControlName="glucose_history" placeholder="Glucose History (e.g. 4, 5, 3, 1, 2)"
+                    [class.is-invalid]="type2Form.get('glucose_history')?.invalid && type2Form.get('glucose_history')?.touched">
+                <input type="number" formControlName="minutes_since_meal" placeholder="Minutes Since Meal">
+                <input type="number" formControlName="carbs" placeholder="Carbohydrates (g)">
+                <input type="number" formControlName="insulin_total" placeholder="Total Insulin">
+                <input type="number" formControlName="hour" placeholder="Current Hour (0-23)">
             </div>
-        </div>
-        <button class="btn submit-btn mt-4 w-100" [disabled]="hypertensionForm.invalid || isLoading">
-            {{ isLoading ? 'Generating...' : 'Generate Report' }}
-        </button>
-    </form>
+            <button class="btn submit-btn mt-4 w-100" type="submit" [disabled]="isLoading">
+                {{ isLoading ? 'Generating...' : 'Generate Report' }}
+            </button>
+        </form>
 
-    <form *ngIf="diseaseType === 'type1'" [formGroup]="type1Form" (ngSubmit)="submitForm()">
-        <div class="form-grid">
-            <input type="number" formControlName="baseline_glucose" placeholder="Baseline Glucose (mmol/L)">
-            <input type="number" formControlName="carbs_g" placeholder="Carbohydrates (g)">
-            <input type="number" formControlName="meal_calories" placeholder="Meal Calories (kcal)">
-            <input type="number" formControlName="minutes_since_meal" placeholder="Minutes Since Meal">
-            <input type="number" formControlName="heart_rate" placeholder="Heart Rate (bpm)">
-            <input type="number" formControlName="insulin_units" placeholder="Insulin Units">
-            <select formControlName="activity_level">
-                <option value="Sedentary">Sedentary</option>
-                <option value="Moderate">Moderate</option>
-                <option value="Active">Active</option>
-            </select>
-        </div>
-        <button class="btn submit-btn mt-4 w-100" [disabled]="type1Form.invalid || isLoading">
-            {{ isLoading ? 'Generating...' : 'Generate Report' }}
-        </button>
-    </form>
+    </div>
 
-    <form *ngIf="diseaseType === 'type2'" [formGroup]="type2Form" (ngSubmit)="submitForm()">
-        <div class="form-grid">
-            <input type="text" formControlName="glucose_history" placeholder="Glucose History (e.g. 4, 5, 3, 1, 2)">
-            
-            <input type="number" formControlName="minutes_since_meal" placeholder="Minutes Since Meal">
-            <input type="number" formControlName="carbs" placeholder="Carbohydrates (g)">
-            <input type="number" formControlName="insulin_total" placeholder="Total Insulin">
-            <input type="number" formControlName="hour" placeholder="Current Hour (0-23)">
-        </div>
-        <button class="btn submit-btn mt-4 w-100" [disabled]="type2Form.invalid || isLoading">
-            {{ isLoading ? 'Generating...' : 'Generate Report' }}
-        </button>
-    </form>
-
-</div>
-
-<div class="custom-modal-backdrop" *ngIf="isModalOpen" (click)="closeModal()">
-    <div class="custom-modal-content" (click)="$event.stopPropagation()">
-        
-        <div class="modal-header d-flex justify-content-between align-items-center mb-3">
-            <h4 class="m-0">Health Prediction</h4>
-            <button class="btn-close" (click)="closeModal()"></button>
-        </div>
-
-        <div class="modal-body text-center py-4">
-            <div *ngIf="diseaseType === 'hypertension'">
-                <p class="text-muted mb-1">Predicted Blood Pressure</p>
-                <h1 class="display-4 fw-bold">
-                    {{ predictionResult?.predicted_sbp | number:'1.0-0' }} / {{ predictionResult?.predicted_dbp | number:'1.0-0' }}
-                </h1>
-                <p class="mt-3 lead" [ngClass]="predictionResult?.is_normal ? 'text-success' : 'text-warning'">
-                    {{ predictionResult?.message }}
-                </p>
+    <!-- MODAL -->
+    <div class="custom-modal-backdrop" *ngIf="isModalOpen" (click)="closeModal()">
+        <div class="custom-modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header d-flex justify-content-between align-items-center mb-3">
+                <h4 class="m-0">Health Prediction</h4>
+                <button class="btn-close" (click)="closeModal()"></button>
             </div>
-
-            <div *ngIf="diseaseType === 'type1'">
-                <p class="text-muted mb-1">Predicted Glucose Level</p>
-                <h1 class="display-4 fw-bold">
-                    {{ predictionResult?.predicted_glucose | number:'1.1-2' }} <span class="fs-4">mmol/L</span>
-                </h1>
-                <p class="mt-3 lead">
-                    {{ predictionResult?.recommendation || predictionResult?.status }}
-                </p>
+            <div class="modal-body text-center py-4">
+                <div *ngIf="diseaseType === 'hypertension'">
+                    <p class="text-muted mb-1">Predicted Blood Pressure</p>
+                    <h1 class="display-4 fw-bold">
+                        {{ predictionResult?.predicted_sbp | number:'1.0-0' }} / {{ predictionResult?.predicted_dbp | number:'1.0-0' }}
+                    </h1>
+                    <p class="mt-3 lead" [ngClass]="predictionResult?.is_normal ? 'text-success' : 'text-warning'">
+                        {{ predictionResult?.message }}
+                    </p>
+                </div>
+                <div *ngIf="diseaseType === 'type1'">
+                    <p class="text-muted mb-1">Predicted Glucose Level</p>
+                    <h1 class="display-4 fw-bold">
+                        {{ predictionResult?.predicted_glucose | number:'1.1-2' }} <span class="fs-4">mmol/L</span>
+                    </h1>
+                    <p class="mt-3 lead">{{ predictionResult?.recommendation || predictionResult?.status }}</p>
+                </div>
+                <div *ngIf="diseaseType === 'type2'">
+                    <p class="text-muted mb-1">Predicted Glucose Level</p>
+                    <h1 class="display-4 fw-bold">
+                        {{ predictionResult?.predicted_glucose_mmol_L | number:'1.1-2' }} <span class="fs-4">mmol/L</span>
+                    </h1>
+                    <p class="mt-3 lead" [ngClass]="{'text-success': predictionResult?.message?.includes('طبيعي')}">
+                        {{ predictionResult?.message }}
+                    </p>
+                    <p class="text-muted mt-2" dir="rtl" style="font-size: 14px;">{{ predictionResult?.summary }}</p>
+                </div>
             </div>
-
-            <div *ngIf="diseaseType === 'type2'">
-                <p class="text-muted mb-1">Predicted Glucose Level</p>
-                <h1 class="display-4 fw-bold">
-                    {{ predictionResult?.predicted_glucose_mmol_L | number:'1.1-2' }} <span class="fs-4">mmol/L</span>
-                </h1>
-                <p class="mt-3 lead" [ngClass]="{'text-success': predictionResult?.message?.includes('طبيعي')}">
-                    {{ predictionResult?.message }}
-                </p>
-                <p class="text-muted mt-2" dir="rtl" style="font-size: 14px;">
-                    {{ predictionResult?.summary }}
-                </p>
+            <div class="modal-footer border-0 mt-2">
+                <button class="btn submit-btn w-100" (click)="closeModal()">Done</button>
             </div>
-        </div>
-
-        <div class="modal-footer border-0 mt-2">
-            <button class="btn submit-btn w-100" (click)="closeModal()">Done</button>
         </div>
     </div>
 </div>
-</div>
 
-
-
+<!-- VALUES SECTION -->
 <section class="values-section" id="values">
     <div class="text-content">
         <div class="About-content text-center">
-            <h2 class="Aboutus fs-1 fw-bolder mb-5" data-bigletter="Our Values">
-                Your Better Life
-            </h2>
+            <h2 class="Aboutus fs-1 fw-bolder mb-5" data-bigletter="Our Values">Your Better Life</h2>
             <hr>
         </div>
     </div>
-
     <div class="container">
         <div class="row justify-content-center values-grid">
-
             <div class="col-md-5 value-card">
-                <div class="img-wrapper">
-                    <img src="assets/images/moza-removebg-preview.png" class="w-100" alt="Value 1" />
-                </div>
-
+                <div class="img-wrapper"><img src="assets/images/moza-removebg-preview.png" class="w-100" alt="Value 1" /></div>
                 <h5>Simplicity as<br> a response to reality</h5>
-
             </div>
-
             <div class="col-md-5 value-card">
-                <div class="img-wrapper">
-                    <img src="assets/images/girl.png" class="w-100" alt="Value 2" />
-                </div>
-
+                <div class="img-wrapper"><img src="assets/images/girl.png" class="w-100" alt="Value 2" /></div>
                 <h5>Eating well<br> without feeling bad</h5>
-
             </div>
-
             <div class="col-md-5 value-card">
-                <div class="img-wrapper">
-                    <img src="assets/images/beliefs_3_orange.png" class="w-100" alt="Value 3" />
-
-                </div>
+                <div class="img-wrapper"><img src="assets/images/beliefs_3_orange.png" class="w-100" alt="Value 3" /></div>
                 <h5>Sustainability as a result of<br> small actions</h5>
-
             </div>
-
             <div class="col-md-5 value-card">
-                <div class="img-wrapper">
-                    <img src="assets/images/beliefs_4_orange.png" class="w-100" alt="Value 4" />
-
-                </div>
+                <div class="img-wrapper"><img src="assets/images/beliefs_4_orange.png" class="w-100" alt="Value 4" /></div>
                 <h5>Making your<br> life tasty</h5>
-
             </div>
-
         </div>
     </div>
 </section>
 
-
-
-
+<!-- INGREDIENTS SECTION -->
 <section class="ingredients-section">
     <div class="text-content">
         <div class="About-content text-center">
-            <h2 class="Aboutus fs-1 fw-bolder mb-5" data-bigletter="Our Ingredients">
-                Naturally Selected
-            </h2>
+            <h2 class="Aboutus fs-1 fw-bolder mb-5" data-bigletter="Our Ingredients">Naturally Selected</h2>
             <hr>
         </div>
     </div>
-
     <div class="container ingredients-wrapper pt-4">
-
-        <!-- Eat well -->
         <div class="ingredient-row left-text">
             <div class="text-box text-center">
                 <h4>Eat well</h4>
-                <p>
-                    There’s only one “right” way to eat healthy and be well: yours!
-                    We encourage you to forge your own path to being well with the food
-                    you prepare — embracing simple cooking and balanced eating along the
-                    way. Experience the freedom of tasty, good-for-you food that doesn’t
-                    come with stipulations or limits.
-                </p>
+                <p>There's only one "right" way to eat healthy and be well: yours! We encourage you to forge your own path to being well with the food you prepare — embracing simple cooking and balanced eating along the way.</p>
             </div>
-
-            <div class="image-box">
-                <img src="../../../assets/images/come.webp" class="w-75" alt="Eat well">
-            </div>
+            <div class="image-box"><img src="../../../assets/images/come.webp" class="w-75" alt="Eat well"></div>
         </div>
-
-        <!-- Move often -->
         <div class="ingredient-row right-text">
-            <div class="image-box">
-                <img src="../../../assets/images/muevete.webp" class="w-75" alt="Move often">
-            </div>
-
+            <div class="image-box"><img src="../../../assets/images/muevete.webp" class="w-75" alt="Move often"></div>
             <div class="text-box text-center">
                 <h4>Move often</h4>
-                <p>
-                    Do you find it hard to make the time to exercise regularly, or even
-                    move throughout your day? We’ve got some great news: you don’t need
-                    to train for a marathon to improve your physical or emotional health.
-                    You just need to walk a bit each day. By walking frequently, even just
-                    a short distance, you can drastically improve your well-being!
-                </p>
+                <p>Do you find it hard to make the time to exercise regularly, or even move throughout your day? You just need to walk a bit each day to drastically improve your well-being!</p>
             </div>
         </div>
-
-        <!-- Be mindful -->
         <div class="ingredient-row left-text">
             <div class="text-box text-center">
                 <h4>Be mindful</h4>
-                <p>
-                    If we want to be well with ourselves, we need to learn to be well with
-                    our mind. This means intentional relaxation and rest. A very simple
-                    starting point? Breathing! But not like the kind you need to live.
-                    We mean practicing active, deep, conscious breathing. By setting time
-                    aside each day to sit and be with ourselves, we can find true balance
-                    within our daily habits and lifestyle.
-                </p>
+                <p>If we want to be well with ourselves, we need to learn to be well with our mind. This means intentional relaxation and rest. A very simple starting point? Breathing!</p>
             </div>
-
-            <div class="image-box">
-                <img src="../../../assets/images/consciete.webp" class="w-75" alt="Be mindful">
-            </div>
+            <div class="image-box"><img src="../../../assets/images/consciete.webp" class="w-75" alt="Be mindful"></div>
         </div>
-
     </div>
 </section>

@@ -1,83 +1,100 @@
-<div class="recipe-card">
+<div class="details-page" *ngIf="meal; else loading">
 
-  <!-- Image -->
-  <div class="recipe-img">
-    <img src="  assets/images/brg.jpg" alt="Tuna Burger">
+  <!-- Hero -->
+  <div class="details-hero" [style.background-image]="'url(' + getImageUrl() + ')'">
+    <div class="hero-overlay">
+      <button class="back-btn" (click)="goBack()">← Back</button>
+      <div class="hero-content">
+        <h1 class="meal-title">{{ meal.name }}</h1>
+        <p class="meal-category-tag" *ngIf="meal.category">{{ meal.category }}</p>
+      </div>
+    </div>
   </div>
 
-  <div class="recipe-content">
+  <div class="details-body">
 
-    <h2 class="recipe-title">Tuna Hamburgers</h2>
+    <!-- Quick stats -->
+    <div class="stats-row">
+      <div class="stat-item" *ngIf="meal.calories">
+        <span class="stat-icon">🔥</span>
+        <span class="stat-value">{{ scaledCalories }}</span>
+        <span class="stat-label">Calories</span>
+      </div>
+      <div class="stat-item" *ngIf="meal.prepTime">
+        <span class="stat-icon">⏱</span>
+        <span class="stat-value">{{ meal.prepTime }}</span>
+        <span class="stat-label">Minutes</span>
+      </div>
+      <div class="stat-item" *ngIf="meal.protein">
+        <span class="stat-icon">💪</span>
+        <span class="stat-value">{{ meal.protein }}g</span>
+        <span class="stat-label">Protein</span>
+      </div>
+      <div class="stat-item" *ngIf="meal.carbs">
+        <span class="stat-icon">🌾</span>
+        <span class="stat-value">{{ meal.carbs }}g</span>
+        <span class="stat-label">Carbs</span>
+      </div>
+    </div>
 
-    <div class="stars">★★★★★</div>
-
-    <p class="text-muted">
-      "Hamburgers don't always have to be made out of meat, you can also make them out of fish.
-      If you're looking for new ways to eat this protein, then this fun and delicious recipe is for you!"
-    </p>
-
-    <!-- Info -->
-    <div class="info-box">
-      <div>🧺 Ingredients <strong>10</strong></div>
-      <div>⚡ Difficulty <strong>Easy</strong></div>
-      <div>⏱ Time <strong>30'</strong></div>
+    <!-- Description -->
+    <div class="section-block" *ngIf="meal.description">
+      <h3 class="section-heading">About this meal</h3>
+      <p class="meal-description">{{ meal.description }}</p>
     </div>
 
     <!-- Servings -->
-    <div class="servings">
-      <span class="fw-semibold">Servings</span>
-      <button (click)="decrease()">-</button>
-      <span>{{ servings }}</span>
-      <button (click)="increase()">+</button>
+    <div class="servings-row">
+      <span class="servings-label">Servings</span>
+      <div class="servings-control">
+        <button class="servings-btn" (click)="decrease()">−</button>
+        <span class="servings-count">{{ servings }}</span>
+        <button class="servings-btn" (click)="increase()">+</button>
+      </div>
     </div>
 
-    <!-- Fresh Ingredients -->
-    <h6 class="ingredients-title">Fresh ingredients</h6>
-
-    <div class="ingredient-item">
-      <span>🧅 Onion</span>
-      <span>1/2 unit</span>
-    </div>
-    <div class="ingredient-item">
-      <span>🥚 Egg</span>
-      <span>1 unit</span>
-    </div>
-    <div class="ingredient-item">
-      <span>🌿 Parsley</span>
-      <span>1 handful</span>
-    </div>
-    <div class="ingredient-item">
-      <span>🍅 Tomato</span>
-      <span>1 unit</span>
-    </div>
-    <div class="ingredient-item">
-      <span>🥬 Lettuce</span>
-      <span>2 handfuls</span>
+    <!-- Ingredients -->
+    <div class="section-block" *ngIf="meal.ingredients">
+      <h3 class="section-heading">Ingredients</h3>
+      <!-- لو string -->
+      <div *ngIf="isString(meal.ingredients)" class="ingredients-list">
+        <div class="ingredient-row" *ngFor="let ing of splitIngredients(meal.ingredients)">
+          <span class="ingredient-name">{{ ing }}</span>
+        </div>
+      </div>
+      <!-- لو array -->
+      <div *ngIf="!isString(meal.ingredients)" class="ingredients-list">
+        <div class="ingredient-row" *ngFor="let ing of meal.ingredients">
+          <span class="ingredient-name">{{ ing.name || ing }}</span>
+          <span class="ingredient-amount" *ngIf="ing.amount">
+            {{ +(ing.amount * servings).toFixed(1) }} {{ ing.unit }}
+          </span>
+        </div>
+      </div>
     </div>
 
-    <!-- Pantry -->
-    <h6 class="ingredients-title pantry">Pantry ingredients</h6>
+    <!-- Instructions -->
+    <div class="section-block" *ngIf="meal.instructions">
+      <h3 class="section-heading">Instructions</h3>
+      <p class="meal-instructions">{{ meal.instructions }}</p>
+    </div>
 
-    <div class="ingredient-item">
-      <span>🧂 Salt</span>
-      <span>1 pinch</span>
+    <!-- Log button -->
+    <div class="log-section" *ngIf="!addedToLog">
+      <button class="log-btn" (click)="logMeal()" [disabled]="isLoading">
+        <span *ngIf="isLoading">Adding...</span>
+        <span *ngIf="!isLoading">+ Add to My Calories</span>
+      </button>
     </div>
-    <div class="ingredient-item">
-      <span>🌶 Black Pepper</span>
-      <span>1 pinch</span>
-    </div>
-    <div class="ingredient-item">
-      <span>🥄 Mustard</span>
-      <span>1 tsp</span>
-    </div>
-    <div class="ingredient-item">
-      <span>🍞 Bread</span>
-      <span>2 units</span>
-    </div>
-    <div class="ingredient-item">
-      <span>🐟 Canned Tuna</span>
-      <span>7 oz</span>
+    <div class="log-success" *ngIf="addedToLog">
+      ✅ Meal logged to your daily calories!
     </div>
 
   </div>
 </div>
+
+<ng-template #loading>
+  <div class="text-center py-5">
+    <div class="spinner-border" style="color:#f16818"></div>
+  </div>
+</ng-template>
