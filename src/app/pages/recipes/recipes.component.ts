@@ -26,23 +26,35 @@ export class RecipesComponent implements OnInit {
   }
 
   loadMeals() {
-    this.isLoading = true;
-    this.apiService.getMeals().subscribe({
-      next: (res) => {
-        const all = res.data || (Array.isArray(res) ? res : []);
-        // deduplicate by id
-        const seen = new Set();
-        this.meals = all.filter((m: any) => {
-          if (seen.has(m.id)) return false;
-          seen.add(m.id);
-          return true;
-        });
-        this.filteredMeals = [...this.meals];
-        this.isLoading = false;
-      },
-      error: () => { this.isLoading = false; }
-    });
-  }
+  this.isLoading = true;
+  // جيب كل الوجبات وفلتر بناءً على أمراض اليوزر
+  this.apiService.getAllMeals().subscribe({
+    next: (res) => {
+      const all = res.data || (Array.isArray(res) ? res : []);
+      const seen = new Set<string>();
+      
+      // لو اليوزر عنده أمراض، فلتر الوجبات المناسبة
+      const userDiseaseNames = (localStorage.getItem('userDiseaseName') || '').toLowerCase();
+      
+      this.meals = all.filter((m: any) => {
+        // dedup
+        if (seen.has(m.id)) return false;
+        seen.add(m.id);
+        // لو مفيش disease names، اعرض كل حاجة
+        if (!userDiseaseNames) return true;
+        // فلتر بناءً على DiseaseTags
+        const tags = (m.diseaseTags || []).map((t: string) => t.toLowerCase());
+        return tags.some((tag: string) => 
+          userDiseaseNames.split(' & ').some(d => tag.includes(d) || d.includes(tag))
+        ) || m.suitableForDiabetesAndHypertension;
+      });
+      
+      this.filteredMeals = [...this.meals];
+      this.isLoading = false;
+    },
+    error: () => { this.isLoading = false; }
+  });
+}
 
   onSearch() {
     const q = this.searchQuery.toLowerCase();

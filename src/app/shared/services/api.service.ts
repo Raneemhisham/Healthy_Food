@@ -3,71 +3,58 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environment/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ApiService {
-
   private baseUrl = environment.apiUrl;
-
   constructor(private http: HttpClient) {}
 
-  // ========== Meals ==========
-  // GET /api/v1/meals/for-me  → وجبات مناسبة لمرض اليوزر
+  // ===== Meals =====
+  getAllMeals(): Observable<any> {
+  return this.http.get(`${this.baseUrl}/meals`);
+}
   getMeals(): Observable<any> {
     return this.http.get(`${this.baseUrl}/meals/for-me`);
   }
-
   getMealById(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/meals/${id}`);
   }
 
   // POST /api/v1/calories/me/recipes/add
-  recordMeal(data: { mealId: string; servings?: number }): Observable<any> {
+  // Backend expects: { mealId, date? }  — userId من الـ token
+  recordMeal(data: { mealId: string; date?: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/calories/me/recipes/add`, data);
   }
 
-  // ========== Calories ==========
   // GET /api/v1/calories/me/summary
+  // Returns: { targetCalories, consumedCalories, remainingCalories, mealCount, meals[] }
   getDailyCalories(): Observable<any> {
     return this.http.get(`${this.baseUrl}/calories/me/summary`);
   }
 
-  // POST /api/v1/calories/me/add  (custom food entry)
-  addCalories(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/calories/me/add`, data);
-  }
-
-  // ========== Restaurants ==========
+  // ===== Restaurants =====
   getRestaurants(): Observable<any> {
     return this.http.get(`${this.baseUrl}/restaurants`);
   }
-
   getRestaurantById(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/restaurants/${id}`);
   }
-
-  // POST /api/v1/restaurants/{id}/reviews/me
   addRestaurantReview(restaurantId: string, data: { rating: number; comment: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/restaurants/${restaurantId}/reviews/me`, data);
   }
-
   getRestaurantReviews(restaurantId: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/restaurants/${restaurantId}/reviews`);
   }
 
-  // ========== Diseases ==========
+  // ===== Diseases =====
   getDiseases(): Observable<any> {
     return this.http.get(`${this.baseUrl}/disease-registry/diseases`);
   }
-
   getUserDiseases(userId: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/disease-registry/user/${userId}/diseases`);
   }
 
-  // ========== Weight ==========
-  // POST /api/v1/weight-dynamics/estimate
-  estimateWeight(data: any): Observable<any> {
+  // ===== Weight =====
+  estimateWeight(data: { userId: string; dailyIntakeCalories: number }): Observable<any> {
     return this.http.post(`${this.baseUrl}/weight-dynamics/estimate`, data);
   }
 }

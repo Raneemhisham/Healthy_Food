@@ -150,3 +150,37 @@ a {
     }
 
 }
+/* ===== Weight Dynamics ===== */
+.weight-dynamics-section {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1.2rem 1.5rem;
+  background: #f9fafb;
+}
+.weight-dynamics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.weight-result-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 14px;
+}
+.result-item:last-child { border: none; }
+.result-label { color: #6b7280; }
+.result-value { font-weight: 700; color: #1a1a2e; }

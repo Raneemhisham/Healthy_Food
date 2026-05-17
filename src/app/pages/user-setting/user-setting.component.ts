@@ -20,6 +20,9 @@ export class UserSettingComponent implements OnInit {
   userProfile: any = null;
   diseases: any[] = [];
   currentDiseaseName = 'None registered';
+  weightEstimate: any = null;
+  weightLoading = false;
+  weightError = '';
 
   constructor(
     private fb: FormBuilder,
@@ -51,22 +54,23 @@ export class UserSettingComponent implements OnInit {
   }
 
   updateCurrentDiseaseName() {
-    // جرب الـ userDiseaseName المخزن أولاً
+    // جرب الـ userDiseaseName المخزن أولاً (بيكون فيه كل الأمراض)
     const stored = localStorage.getItem('userDiseaseName');
     if (stored) {
       this.currentDiseaseName = stored;
       return;
     }
-    // لو مفيش، قارن الـ diseaseIds بالـ diseases list
+    // fallback: من الـ diseases list
     const cached = localStorage.getItem('userProfile');
     if (cached && this.diseases.length > 0) {
       try {
         const profile = JSON.parse(cached);
-        const id = profile.diseaseIds?.[0];
-        if (id) {
+        const ids = profile.diseaseIds || [];
+        const names = ids.map((id: string) => {
           const found = this.diseases.find((d: any) => d.id?.toLowerCase() === id.toLowerCase());
-          if (found) this.currentDiseaseName = found.name;
-        }
+          return found?.name || '';
+        }).filter((n: string) => n);
+        if (names.length > 0) this.currentDiseaseName = names.join(', ');
       } catch {}
     }
   }
@@ -127,6 +131,30 @@ export class UserSettingComponent implements OnInit {
       error: (err: any) => {
         this.errorMessage = err.error?.message || 'Failed to update profile.';
         this.isSaving = false;
+      }
+    });
+  }
+
+  estimateWeight() {
+    const userId = localStorage.getItem('userId');
+    const profile = localStorage.getItem('userProfile');
+    if (!userId || !profile) return;
+
+    const p = JSON.parse(profile);
+    const dailyIntakeCalories = p.dailyCalories || 2000;
+
+    this.weightLoading = true;
+    this.weightError = '';
+    this.weightEstimate = null;
+
+    this.apiService.estimateWeight({ userId, dailyIntakeCalories }).subscribe({
+      next: (res: any) => {
+        this.weightEstimate = res.data || res;
+        this.weightLoading = false;
+      },
+      error: (err: any) => {
+        this.weightError = err.error?.message || 'Failed to estimate weight.';
+        this.weightLoading = false;
       }
     });
   }

@@ -5,42 +5,58 @@
     <div class="hero-overlay">
       <button class="back-btn" (click)="goBack()">← Back</button>
       <div class="hero-content">
+        <span class="meal-type-tag" *ngIf="meal.mealType">{{ meal.mealType }}</span>
         <h1 class="meal-title">{{ meal.name }}</h1>
-        <p class="meal-category-tag" *ngIf="meal.category">{{ meal.category }}</p>
+        <span class="cuisine-tag" *ngIf="meal.cuisine">🍴 {{ meal.cuisine }}</span>
       </div>
     </div>
   </div>
 
   <div class="details-body">
 
-    <!-- Quick stats -->
-    <div class="stats-row">
+    <!-- Nutrition Stats -->
+    <div class="stats-card">
       <div class="stat-item" *ngIf="meal.calories">
         <span class="stat-icon">🔥</span>
         <span class="stat-value">{{ scaledCalories }}</span>
         <span class="stat-label">Calories</span>
       </div>
-      <div class="stat-item" *ngIf="meal.prepTime">
-        <span class="stat-icon">⏱</span>
-        <span class="stat-value">{{ meal.prepTime }}</span>
-        <span class="stat-label">Minutes</span>
-      </div>
-      <div class="stat-item" *ngIf="meal.protein">
+      <div class="stat-item" *ngIf="meal.proteinG">
         <span class="stat-icon">💪</span>
-        <span class="stat-value">{{ meal.protein }}g</span>
+        <span class="stat-value">{{ (meal.proteinG * servings) | number:'1.0-1' }}g</span>
         <span class="stat-label">Protein</span>
       </div>
-      <div class="stat-item" *ngIf="meal.carbs">
+      <div class="stat-item" *ngIf="meal.carbohydratesG">
         <span class="stat-icon">🌾</span>
-        <span class="stat-value">{{ meal.carbs }}g</span>
+        <span class="stat-value">{{ (meal.carbohydratesG * servings) | number:'1.0-1' }}g</span>
         <span class="stat-label">Carbs</span>
+      </div>
+      <div class="stat-item" *ngIf="meal.totalFatG">
+        <span class="stat-icon">🥑</span>
+        <span class="stat-value">{{ (meal.totalFatG * servings) | number:'1.0-1' }}g</span>
+        <span class="stat-label">Fat</span>
+      </div>
+      <div class="stat-item" *ngIf="meal.servingSizeG">
+        <span class="stat-icon">⚖️</span>
+        <span class="stat-value">{{ meal.servingSizeG }}g</span>
+        <span class="stat-label">Serving</span>
       </div>
     </div>
 
-    <!-- Description -->
-    <div class="section-block" *ngIf="meal.description">
-      <h3 class="section-heading">About this meal</h3>
-      <p class="meal-description">{{ meal.description }}</p>
+    <!-- Disease Tags -->
+    <div class="tags-row" *ngIf="meal.diseaseTags?.length > 0">
+      <span class="disease-tag" *ngFor="let tag of meal.diseaseTags">✓ {{ tag }}</span>
+    </div>
+
+    <!-- Suitable badge -->
+    <div class="suitable-badge" *ngIf="meal.suitableForDiabetesAndHypertension">
+      ✅ Suitable for Diabetes & Hypertension
+    </div>
+
+    <!-- Description / Medical Note -->
+    <div class="section-block" *ngIf="meal.medicalBenefitNote">
+      <h3 class="section-heading">💊 Health Benefits</h3>
+      <p class="section-text">{{ meal.medicalBenefitNote }}</p>
     </div>
 
     <!-- Servings -->
@@ -55,39 +71,53 @@
 
     <!-- Ingredients -->
     <div class="section-block" *ngIf="meal.ingredients">
-      <h3 class="section-heading">Ingredients</h3>
-      <!-- لو string -->
-      <div *ngIf="isString(meal.ingredients)" class="ingredients-list">
-        <div class="ingredient-row" *ngFor="let ing of splitIngredients(meal.ingredients)">
+      <h3 class="section-heading">🧺 Ingredients</h3>
+      <div class="ingredients-list">
+        <div class="ingredient-row" *ngFor="let ing of getIngredientsList()">
+          <span class="ingredient-dot">•</span>
           <span class="ingredient-name">{{ ing }}</span>
-        </div>
-      </div>
-      <!-- لو array -->
-      <div *ngIf="!isString(meal.ingredients)" class="ingredients-list">
-        <div class="ingredient-row" *ngFor="let ing of meal.ingredients">
-          <span class="ingredient-name">{{ ing.name || ing }}</span>
-          <span class="ingredient-amount" *ngIf="ing.amount">
-            {{ +(ing.amount * servings).toFixed(1) }} {{ ing.unit }}
-          </span>
         </div>
       </div>
     </div>
 
-    <!-- Instructions -->
-    <div class="section-block" *ngIf="meal.instructions">
-      <h3 class="section-heading">Instructions</h3>
-      <p class="meal-instructions">{{ meal.instructions }}</p>
+    <!-- Preparation Method -->
+    <div class="section-block" *ngIf="meal.preparationMethod">
+      <h3 class="section-heading">👨‍🍳 Preparation</h3>
+      <div class="steps-list">
+        <div class="step-row" *ngFor="let step of getStepsList(); let i = index">
+          <span class="step-num">{{ i + 1 }}</span>
+          <span class="step-text">{{ step }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Extra Nutrition Info -->
+    <div class="section-block nutrition-extra" *ngIf="meal.sodiumMg || meal.potassiumMg || meal.saturatedFatG">
+      <h3 class="section-heading">📊 Detailed Nutrition</h3>
+      <div class="nutrition-grid">
+        <div class="nutrition-item" *ngIf="meal.saturatedFatG">
+          <span class="nutrition-label">Saturated Fat</span>
+          <span class="nutrition-value">{{ meal.saturatedFatG | number:'1.0-1' }}g</span>
+        </div>
+        <div class="nutrition-item" *ngIf="meal.sodiumMg">
+          <span class="nutrition-label">Sodium</span>
+          <span class="nutrition-value">{{ meal.sodiumMg | number:'1.0-0' }}mg</span>
+        </div>
+        <div class="nutrition-item" *ngIf="meal.potassiumMg">
+          <span class="nutrition-label">Potassium</span>
+          <span class="nutrition-value">{{ meal.potassiumMg | number:'1.0-0' }}mg</span>
+        </div>
+      </div>
     </div>
 
     <!-- Log button -->
     <div class="log-section" *ngIf="!addedToLog">
       <button class="log-btn" (click)="logMeal()" [disabled]="isLoading">
-        <span *ngIf="isLoading">Adding...</span>
-        <span *ngIf="!isLoading">+ Add to My Calories</span>
+        {{ isLoading ? 'Adding...' : '+ Add to My Calories' }}
       </button>
     </div>
     <div class="log-success" *ngIf="addedToLog">
-      ✅ Meal logged to your daily calories!
+      ✅ {{ scaledCalories }} calories logged successfully!
     </div>
 
   </div>

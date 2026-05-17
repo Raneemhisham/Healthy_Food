@@ -16,8 +16,8 @@ export class RegisterComponent implements OnInit {
   step = 1;
   isLoading = false;
   errorMessage = '';
-
   diseases: any[] = [];
+  selectedDiseaseIds: string[] = []; // متعدد
 
   step1Form!: FormGroup;
   step2Form!: FormGroup;
@@ -43,38 +43,44 @@ export class RegisterComponent implements OnInit {
       gender: ['Male', Validators.required],
       activityLevel: ['Sedentary', Validators.required],
       goal: ['maintain', Validators.required],
-      diseaseId: ['', Validators.required],
     });
 
-    // جيب الأمراض من الـ backend
     this.apiService.getDiseases().subscribe({
-      next: (res) => {
-        // الـ response فيه { success, data: [...] }
-        this.diseases = res.data || res;
-      },
+      next: (res) => { this.diseases = res.data || res; },
       error: () => {
         this.diseases = [
-          { id: 'e6910cdc-f77d-4cd4-a2d4-8b13e8a329d3', name: 'High Blood Pressure' },
-          { id: '5cbbfba7-f024-484b-9e49-0107baa30fa7', name: 'Obesity' },
-          { id: '910e99a8-a9c9-4cf4-8344-b73c5931d4bc', name: 'Type 1 Diabetes' },
-          { id: '270c6c2b-9400-47d1-929a-4cfaaadc8736', name: 'Type 2 Diabetes' },
-          { id: '16c68d59-29e6-4edb-a136-f97d35e665b9', name: 'Underweight' },
+          { id: '', name: 'High Blood Pressure' },
+          { id: '', name: 'Obesity' },
+          { id: '', name: 'Type 1 Diabetes' },
+          { id: '', name: 'Type 2 Diabetes' },
+          { id: '', name: 'Underweight' },
         ];
       }
     });
   }
 
-  goToStep2() {
-    if (this.step1Form.invalid) {
-      this.step1Form.markAllAsTouched();
-      return;
+  toggleDisease(id: string) {
+    const idx = this.selectedDiseaseIds.indexOf(id);
+    if (idx === -1) {
+      this.selectedDiseaseIds.push(id);
+    } else {
+      this.selectedDiseaseIds.splice(idx, 1);
     }
+  }
+
+  isDiseaseSelected(id: string): boolean {
+    return this.selectedDiseaseIds.includes(id);
+  }
+
+  goToStep2() {
+    if (this.step1Form.invalid) { this.step1Form.markAllAsTouched(); return; }
     this.step = 2;
   }
 
   register() {
-    if (this.step2Form.invalid) {
-      this.step2Form.markAllAsTouched();
+    if (this.step2Form.invalid) { this.step2Form.markAllAsTouched(); return; }
+    if (this.selectedDiseaseIds.length === 0) {
+      this.errorMessage = 'Please select at least one health condition.';
       return;
     }
 
@@ -88,17 +94,18 @@ export class RegisterComponent implements OnInit {
       age: Number(this.step1Form.value.age),
       height: Number(this.step2Form.value.height),
       weight: Number(this.step2Form.value.weight),
-      gender: this.step2Form.value.gender,
-      activityLevel: this.step2Form.value.activityLevel,
-      goal: this.step2Form.value.goal,
-      diseaseIds: [this.step2Form.value.diseaseId],  // GUID string
+      gender: this.step2Form.value.gender.toLowerCase(),
+      activityLevel: this.step2Form.value.activityLevel.toLowerCase(),
+      goal: this.step2Form.value.goal,  // already lowercase: lose/maintain/gain
+      diseaseIds: this.selectedDiseaseIds,
     };
 
-    this.authService.register(finalData).subscribe({
+    this.authService.register(finalData as any).subscribe({
       next: () => {
-        // خزن المرض في localStorage عشان الـ home يعرفه
-        localStorage.setItem('userDisease', this.step2Form.value.diseaseId);
-        // لو الـ API رجع token بعد التسجيل - روح للـ home، غير كدا روح للـ login
+        // خزّن أول مرض مختار
+        if (this.selectedDiseaseIds.length > 0) {
+          localStorage.setItem('userDisease', this.selectedDiseaseIds[0]);
+        }
         this.router.navigate(['/login']);
       },
       error: (err) => {

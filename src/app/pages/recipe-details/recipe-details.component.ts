@@ -13,7 +13,7 @@ import { CaloriesService } from '../../shared/services/calories.service';
 })
 export class RecipeDetailsComponent implements OnInit {
   meal: any = null;
-  servings = 1;  // default 1 serving مش 2
+  servings = 1;
   isLoading = false;
   addedToLog = false;
 
@@ -24,7 +24,6 @@ export class RecipeDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // history.state أكثر موثوقية من router.getCurrentNavigation()
     const state = history.state as { meal: any };
     if (state?.meal) {
       this.meal = state.meal;
@@ -40,37 +39,46 @@ export class RecipeDetailsComponent implements OnInit {
     if (!this.meal?.id) return;
     this.isLoading = true;
 
-    const payload = {
-      mealId: this.meal.id,
-      servings: this.servings
-    };
-
-    this.apiService.recordMeal(payload).subscribe({
+    // Backend only accepts mealId (servings not in DTO)
+    this.apiService.recordMeal({ mealId: this.meal.id }).subscribe({
       next: (res: any) => {
         this.addedToLog = true;
         this.isLoading = false;
-        // CaloriesService بيحدث الـ localStorage تلقائياً
+        // Update calories locally with servings multiplier
         const caloriesEaten = (this.meal.calories || 0) * this.servings;
         this.caloriesService.addFood(caloriesEaten);
+        // Update displayed food from API response if available
+        if (res?.data?.consumedCalories) {
+          this.caloriesService.setFood(res.data.consumedCalories);
+        }
       },
-      error: (err: any) => {
-        console.error('Log meal error:', err);
-        this.isLoading = false;
-      }
+      error: () => { this.isLoading = false; }
     });
   }
 
   goBack() { this.router.navigate(['/recipes']); }
 
-  isString(val: any): boolean { return typeof val === 'string'; }
+  getIngredientsList(): string[] {
+    if (!this.meal?.ingredients) return [];
+    if (typeof this.meal.ingredients === 'string') {
+      return this.meal.ingredients
+        .split(/[;\n]/)
+        .map((s: string) => s.trim())
+        .filter((s: string) => s.length > 0);
+    }
+    return this.meal.ingredients;
+  }
 
-  splitIngredients(val: string): string[] {
-    // بيقسم على ; أو , أو newline
-    return val.split(/[;\n]/).map(s => s.trim()).filter(s => s.length > 0);
+  getStepsList(): string[] {
+    if (!this.meal?.preparationMethod) return [];
+    return this.meal.preparationMethod
+      .split(/(?<=[.!?])\s+|\n/)
+      .map((s: string) => s.trim())
+      .filter((s: string) => s.length > 2);
   }
 
   getImageUrl(): string {
-    if (this.meal?.imageUrl && this.meal.imageUrl.startsWith('http')) return this.meal.imageUrl;
+    if (this.meal?.imageUrl?.startsWith('http')) return this.meal.imageUrl;
     return 'assets/images/brg.jpg';
   }
 

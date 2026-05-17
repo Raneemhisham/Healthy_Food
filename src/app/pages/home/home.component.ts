@@ -25,11 +25,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   showForm = false;
   isModalOpen = false;
-  isLoading = false;
+  loadingType: 'hypertension' | 'type1' | 'type2' | null = null;
+  lastSubmittedType: 'hypertension' | 'type1' | 'type2' | null = null;
   predictionResult: any = null;
 
-  // مرض اليوزر - بيجي من الـ backend بعد اللوجين
-  diseaseType: 'hypertension' | 'type1' | 'type2' | null = null;
+  // مرض اليوزر
+  diseaseTypes: ('hypertension' | 'type1' | 'type2')[] = [];
   diseaseName = '';
 
   // Calories
@@ -58,87 +59,67 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnDestroy() { this.sub.unsubscribe(); }
 
   loadUserDiseaseFromProfile() {
-    // أول حاجة جرب الـ userDiseaseName المخزن مباشرة
-    const diseaseName = localStorage.getItem('userDiseaseName');
-    if (diseaseName) {
-      this.mapDiseaseByName(diseaseName);
-      return;
-    }
+    // جرب الـ userDiseaseName المخزن
+    // const diseaseName = localStorage.getItem('userDiseaseName');
+    // if (diseaseName) {
+    //   this.addDiseaseByName(diseaseName);
+    // }
 
-    // لو مفيش، جرب الـ userProfile
-    const cached = localStorage.getItem('userProfile');
-    if (cached) {
-      try {
-        const profile = JSON.parse(cached);
-        if (profile.diseaseIds?.length > 0) {
-          const diseaseId = profile.diseaseIds[0];
-          this.apiService.getDiseases().subscribe({
-            next: (res: any) => {
-              const diseases = res.data || res;
-              const found = diseases.find((d: any) =>
-                d.id?.toLowerCase() === diseaseId.toLowerCase()
-              );
-              if (found) {
-                localStorage.setItem('userDiseaseName', found.name);
-                this.mapDiseaseByName(found.name);
-              }
-            }
-          });
-          return;
-        }
-      } catch {}
-    }
-
-    // fallback: جيب diseases اليوزر من الـ API مباشرة
+    // جيب كل أمراض اليوزر من الـ API
     const userId = localStorage.getItem('userId');
-    if (userId) {
-      this.apiService.getUserDiseases(userId).subscribe({
-        next: (res: any) => {
-          const userDiseases = res.data || res;
-          if (Array.isArray(userDiseases) && userDiseases.length > 0) {
-            const name = userDiseases[0].disease?.name || userDiseases[0].diseaseName || '';
-            if (name) {
-              localStorage.setItem('userDiseaseName', name);
-              this.mapDiseaseByName(name);
-            }
+  if (!userId) return;
+
+  this.diseaseTypes = []; // reset
+  this.diseaseName = '';
+
+  this.apiService.getUserDiseases(userId).subscribe({
+    next: (res: any) => {
+      const userDiseases = res.data || res;
+      if (Array.isArray(userDiseases) && userDiseases.length > 0) {
+        const names: string[] = [];
+        userDiseases.forEach((ud: any) => {
+          const name = ud.disease?.name || ud.diseaseName || '';
+          if (name) {
+            this.addDiseaseByName(name);
+            names.push(name);
           }
+        });
+        if (names.length > 0) {
+          this.diseaseName = names.join(' & ');
+          localStorage.setItem('userDiseaseName', names.join(' & '));
         }
-      });
+      }
     }
+  });
+  }
+  
+addDiseaseByName(name: string) {
+  const n = name?.toLowerCase() || '';
+  let type: 'hypertension' | 'type1' | 'type2' | null = null;
+
+  if (n.includes('blood pressure') || n.includes('hypertension')) {
+    type = 'hypertension';
+  } else if (n.includes('type 1') || n.includes('type1')) {
+    type = 'type1';
+  } else if (n.includes('type 2') || n.includes('type2')) {
+    type = 'type2';
   }
 
-  mapDiseaseByName(name: string) {
-    const n = name?.toLowerCase() || '';
-    if (n.includes('blood pressure') || n.includes('hypertension')) {
-      this.diseaseType = 'hypertension';
-      this.diseaseName = 'High Blood Pressure';
-    } else if (n.includes('type 1') || n.includes('type1')) {
-      this.diseaseType = 'type1';
-      this.diseaseName = 'Type 1 Diabetes';
-    } else if (n.includes('type 2') || n.includes('type2')) {
-      this.diseaseType = 'type2';
-      this.diseaseName = 'Type 2 Diabetes';
-    } else if (n.includes('obesity') || n.includes('underweight') || n.includes('metabolic')) {
-      this.diseaseType = 'type2';
-      this.diseaseName = name;
-    } else {
-      // لو مش معروف، اعرضه كـ type2
-      this.diseaseType = 'type2';
-      this.diseaseName = name;
-    }
+  if (type && !this.diseaseTypes.includes(type)) {
+    this.diseaseTypes.push(type);
   }
+  if (!this.diseaseName) this.diseaseName = name;
+}
 
-  mapDiseaseIdToType(id: any, name: string) {
-    // legacy - still used as fallback
-    this.mapDiseaseByName(name || id);
-  }
+  // legacy
+  mapDiseaseByName(name: string) { this.addDiseaseByName(name); }
+  mapDiseaseIdToType(id: any, name: string) { this.addDiseaseByName(name || id); }
 
   loadDailyCalories() {
     this.caloriesLoading = true;
 
-    // اقرأ الـ food المحفوظ محلياً أولاً
-    const storedToday = localStorage.getItem('todayCalories');
-    const localFood = storedToday ? (JSON.parse(storedToday).food || 0) : 0;
+    // اقرأ الـ food الخاص بالـ user الحالي
+    const localFood = this.caloriesService.getStoredFood();
 
     const cached = localStorage.getItem('userProfile');
     if (cached) {
@@ -158,14 +139,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.apiService.getDailyCalories().subscribe({
       next: (res) => {
         const data = res.data || res;
-        const apiFood = data.totalCaloriesConsumed || data.food || 0;
+        const apiFood = data.consumedCalories || 0;
         // خد الأكبر بين الـ API والـ local عشان محدش يتلغى
         const finalFood = Math.max(apiFood, localFood);
 
         this.dailyCalories = {
-          goal: data.dailyCalorieGoal || data.goal || this.dailyCalories?.goal || 0,
+          goal: data.targetCalories || this.dailyCalories?.goal || 0,
           food: finalFood,
-          exercise: data.totalCaloriesBurned || data.exercise || 0,
+          exercise: 0 || 0,
         };
         const toStore = { ...this.dailyCalories, date: new Date().toDateString() };
         localStorage.setItem('todayCalories', JSON.stringify(toStore));
@@ -201,14 +182,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   initForms() {
     this.hypertensionForm = this.fb.group({
-      current_sbp: [null, Validators.required],
-      current_dbp: [null, Validators.required],
-      sodium_mg: [null],
-      potassium_mg: [null],
-      age: [null, Validators.required],
-      gender: ['Male', Validators.required],
-      weight: [null, Validators.required],
-      on_bp_med: [0]
+    current_sbp: [null, Validators.required],
+    current_dbp: [null, Validators.required],
+    sodium_mg: [null],
+    potassium_mg: [null],
+    age: [null, Validators.required],
+    gender: ['male', Validators.required],
+    weight: [null, Validators.required],
+    on_bp_med: [0]
     });
 
     this.type1Form = this.fb.group({
@@ -218,50 +199,64 @@ export class HomeComponent implements OnInit, OnDestroy {
       meal_calories: [null],
       minutes_since_meal: [15],
       heart_rate: [null],
-      insulin_units: [null]
+      insulin_units: [null],
+      height_cm: [null],
+      weight_kg: [null],
+      age: [null, Validators.required],
+      gender: ['male', Validators.required],
     });
 
     this.type2Form = this.fb.group({
-      glucose_history: ['', Validators.required],
-      minutes_since_meal: [0],
-      carbs: [0],
-      insulin_total: [0],
-      hour: [23]
+    glucose_history: ['5,4,5', Validators.required],
+    minutes_since_meal: [360],
+    carbs: [200],
+    insulin_total: [40],
+    hour: [23]
     });
   }
 
-  submitForm() {
-    this.isLoading = true;
+  submitForm(formType: 'hypertension' | 'type1' | 'type2') {
+    this.loadingType = formType;
     let apiCall;
 
-    if (this.diseaseType === 'hypertension') {
-      if (this.hypertensionForm.invalid) { this.hypertensionForm.markAllAsTouched(); this.isLoading = false; return; }
+    if (formType === 'hypertension') {
+      if (this.hypertensionForm.invalid) { this.hypertensionForm.markAllAsTouched(); this.loadingType = null; return; }
       apiCall = this.predictionService.predictHypertension(this.hypertensionForm.value);
-    } else if (this.diseaseType === 'type1') {
-      if (this.type1Form.invalid) { this.type1Form.markAllAsTouched(); this.isLoading = false; return; }
+    } else if (formType === 'type1') {
+      if (this.type1Form.invalid) { this.type1Form.markAllAsTouched(); this.loadingType = null; return; }
       apiCall = this.predictionService.predictType1(this.type1Form.value);
-    } else if (this.diseaseType === 'type2') {
-      if (this.type2Form.invalid) { this.type2Form.markAllAsTouched(); this.isLoading = false; return; }
-      const formValue = { ...this.type2Form.value };
-      if (typeof formValue.glucose_history === 'string') {
-        formValue.glucose_history = formValue.glucose_history
-          .split(',')
-          .map((val: string) => Number(val.trim()))
-          .filter((val: number) => !isNaN(val));
-      }
-      apiCall = this.predictionService.predictType2(formValue);
-    }
+    } else if (formType === 'type2') {
+  if (this.type2Form.invalid) {
+    this.type2Form.markAllAsTouched();
+    this.loadingType = null;
+    return;
+  }
+  const formValue = { ...this.type2Form.value };
+  if (typeof formValue.glucose_history === 'string') {
+    formValue.glucose_history = formValue.glucose_history
+      .split(',')
+      .map((val: string) => Number(val.trim()))
+      .filter((val: number) => !isNaN(val));
+  }
+  if (formValue.glucose_history.length < 3) {
+    alert('Please enter at least 3 glucose readings separated by commas (e.g. 5, 4, 5)');
+    this.loadingType = null;
+    return;
+  }
+  apiCall = this.predictionService.predictType2(formValue);
+}
 
     apiCall?.subscribe({
       next: (response) => {
         this.predictionResult = response;
-        this.isLoading = false;
+        this.lastSubmittedType = formType;
+        this.loadingType = null;
         this.isModalOpen = true;
       },
       error: (err) => {
         console.error('Prediction API Error:', err);
-        alert('Error connecting to prediction server.');
-        this.isLoading = false;
+        alert('Error: ' + (err.error?.message || 'Could not connect to prediction server.'));
+        this.loadingType = null;
       }
     });
   }
